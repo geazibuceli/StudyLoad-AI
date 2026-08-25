@@ -1,0 +1,22 @@
+services:
+  study-balance-ai:
+    build:
+      context: .
+    image: study-balance-ai:local
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "${PORT:-3000}:3000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/api/health').then((response) => { if (!response.ok) process.exit(1); }).catch(() => process.exit(1));"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    init: true
+    restart: unless-stopped
