@@ -1,0 +1,17 @@
+.git
+.github
+.vscode
+.env
+.env.*
+docs
+scripts
+tests
+.editorconfig
+.gitattributes
+.gitignore
+*.md
+compose.yaml
+coverage
+node_modules
+npm-debug.log*
+study-balance-plan-*.csv
