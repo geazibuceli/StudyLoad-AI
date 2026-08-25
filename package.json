@@ -1,0 +1,29 @@
+{
+  "name": "study-balance-ai",
+  "version": "1.0.0",
+  "description": "Explainable academic overload forecasting and preventive planning, with privacy by default.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test --test-isolation=none",
+    "train": "node scripts/train-model.js",
+    "model:check": "node scripts/train-model.js --check",
+    "check": "node --check src/server.js && node --check public/app.js && node scripts/check-domain.js && node scripts/train-model.js --check && node --test --test-isolation=none"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "artificial-intelligence",
+    "education",
+    "explainable-ai",
+    "machine-learning",
+    "student-wellbeing",
+    "sdg-3",
+    "sdg-4"
+  ],
+  "author": "Geazi Junior Buceli da Silva",
+  "license": "MIT"
+}
