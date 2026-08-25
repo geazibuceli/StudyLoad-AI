@@ -7,10 +7,10 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "node --test --test-isolation=none",
+    "test": "node --test --experimental-test-isolation=none",
     "train": "node scripts/train-model.js",
     "model:check": "node scripts/train-model.js --check",
-    "check": "node --check src/server.js && node --check public/app.js && node scripts/check-domain.js && node scripts/train-model.js --check && node --test --test-isolation=none"
+    "check": "node --check src/server.js && node --check public/app.js && node scripts/check-domain.js && node scripts/train-model.js --check && node --test --experimental-test-isolation=none"
   },
   "engines": {
     "node": ">=22"
