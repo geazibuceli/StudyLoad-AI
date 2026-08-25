@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use StudyBalance AI, please cite it using these metadata."
+title: "StudyBalance AI: Explainable Academic Workload Forecasting and Preventive Planning"
+type: software
+authors:
+  - family-names: "da Silva"
+    given-names: "Geazi Junior Buceli"
+version: 1.0.0
+date-released: 2026-08-24
+license: MIT
+abstract: >-
+  StudyBalance AI is a local-first educational prototype for seven-day academic
+  workload forecasting. It combines a task planner, a softmax classifier trained
+  on deterministic synthetic data, local counterfactual explanations,
+  deterministic recommendations, and what-if simulation. It is not a diagnostic
+  or clinical system.
+keywords:
+  - artificial intelligence
+  - academic workload
+  - explainable artificial intelligence
+  - machine learning
+  - higher education
+  - privacy by design
+  - sustainable development goal 3
+  - sustainable development goal 4
+preferred-citation:
+  type: software
+  authors:
+    - family-names: "da Silva"
+      given-names: "Geazi Junior Buceli"
+  title: "StudyBalance AI: Explainable Academic Workload Forecasting and Preventive Planning"
+  version: 1.0.0
+  year: 2026
