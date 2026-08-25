@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Test and build output
+coverage/
+.nyc_output/
+dist/
+build/
+
+# Runtime files
+*.log
+*.pid
+*.seed
+study-balance-plan-*.csv
+tmp/
+temp/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Package manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local nested repository used as the GitHub-ready copy
+/StudyLoad-AI/
