@@ -1,9 +1,5 @@
 import modelArtifact from "../../models/study-balance-model.js";
-import {
-  MODEL_FEATURE_NAMES,
-  MODEL_SCHEMA_VERSION,
-  RISK_LEVELS,
-} from "./model-schema.js";
+import { MODEL_FEATURE_NAMES, MODEL_SCHEMA_VERSION, RISK_LEVELS } from "./model-schema.js";
 
 function round(value, precision = 4) {
   const factor = 10 ** precision;
@@ -19,23 +15,17 @@ function softmax(logits) {
 
 function validateArtifact(artifact) {
   if (artifact.schemaVersion !== MODEL_SCHEMA_VERSION) {
-    throw new Error(
-      `Unsupported model schema version ${artifact.schemaVersion}.`,
-    );
+    throw new Error(`Unsupported model schema version ${artifact.schemaVersion}.`);
   }
   if (
-    artifact.featureNames.length !== MODEL_FEATURE_NAMES.length
-    || artifact.featureNames.some(
-      (featureName, index) => featureName !== MODEL_FEATURE_NAMES[index],
-    )
+    artifact.featureNames.length !== MODEL_FEATURE_NAMES.length ||
+    artifact.featureNames.some((featureName, index) => featureName !== MODEL_FEATURE_NAMES[index])
   ) {
     throw new Error("The model artifact feature schema is incompatible.");
   }
   if (
-    artifact.classNames.length !== RISK_LEVELS.length
-    || artifact.classNames.some(
-      (className, index) => className !== RISK_LEVELS[index],
-    )
+    artifact.classNames.length !== RISK_LEVELS.length ||
+    artifact.classNames.some((className, index) => className !== RISK_LEVELS[index])
   ) {
     throw new Error("The model artifact risk classes are incompatible.");
   }
@@ -50,32 +40,23 @@ export function predictRisk(features, artifact = modelArtifact) {
       throw new TypeError(`Feature ${featureName} must be a finite number.`);
     }
 
-    const standardized = (
-      (rawValue - artifact.scaler.means[index])
-      / artifact.scaler.standardDeviations[index]
-    );
+    const standardized =
+      (rawValue - artifact.scaler.means[index]) / artifact.scaler.standardDeviations[index];
     return Math.max(-6, Math.min(6, standardized));
   });
 
-  const logits = artifact.weights.map((classWeights, classIndex) => (
+  const logits = artifact.weights.map((classWeights, classIndex) =>
     classWeights.reduce(
-      (total, weight, featureIndex) => (
-        total + (weight * standardizedFeatures[featureIndex])
-      ),
+      (total, weight, featureIndex) => total + weight * standardizedFeatures[featureIndex],
       artifact.biases[classIndex],
-    )
-  ));
+    ),
+  );
   const probabilityValues = softmax(logits);
   const probabilities = Object.fromEntries(
-    artifact.classNames.map((className, index) => [
-      className,
-      round(probabilityValues[index]),
-    ]),
+    artifact.classNames.map((className, index) => [className, round(probabilityValues[index])]),
   );
   const predictedIndex = probabilityValues.indexOf(Math.max(...probabilityValues));
-  const score = Math.round(
-    (probabilityValues[1] * 50) + (probabilityValues[2] * 100),
-  );
+  const score = Math.round(probabilityValues[1] * 50 + probabilityValues[2] * 100);
 
   return Object.freeze({
     level: artifact.classNames[predictedIndex],
