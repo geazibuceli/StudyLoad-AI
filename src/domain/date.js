@@ -8,13 +8,7 @@ export function parseDate(value, fieldName = "date") {
       throw new RangeError(`${fieldName} must be a valid date.`);
     }
 
-    return new Date(
-      Date.UTC(
-        value.getUTCFullYear(),
-        value.getUTCMonth(),
-        value.getUTCDate(),
-      ),
-    );
+    return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()));
   }
 
   if (typeof value !== "string") {
@@ -32,9 +26,9 @@ export function parseDate(value, fieldName = "date") {
   const parsed = new Date(Date.UTC(year, month - 1, day));
 
   if (
-    parsed.getUTCFullYear() !== year
-    || parsed.getUTCMonth() !== month - 1
-    || parsed.getUTCDate() !== day
+    parsed.getUTCFullYear() !== year ||
+    parsed.getUTCMonth() !== month - 1 ||
+    parsed.getUTCDate() !== day
   ) {
     throw new RangeError(`${fieldName} must be a valid calendar date.`);
   }
@@ -49,7 +43,7 @@ export function formatDate(value) {
 
 export function addDays(value, numberOfDays) {
   const date = value instanceof Date ? value : parseDate(value);
-  return new Date(date.getTime() + (numberOfDays * MILLISECONDS_PER_DAY));
+  return new Date(date.getTime() + numberOfDays * MILLISECONDS_PER_DAY);
 }
 
 export function differenceInDays(laterValue, earlierValue) {
