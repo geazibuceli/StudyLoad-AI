@@ -131,8 +131,23 @@ const elements = {
   taskSearchClear: document.querySelector("#task-search-clear"),
   taskSort: document.querySelector("#task-sort"),
   toastRegion: document.querySelector("#toast-region"),
+  updateList: document.querySelector("#update-list"),
   weekDayGrid: document.querySelector("#week-day-grid"),
 };
+
+const APP_UPDATES = [
+  {
+    version: "v1.2",
+    date: "2026-09-12",
+    title: "Daily release: UI polish and app changelog",
+    items: [
+      "Added a new app log section to document the improvements made today.",
+      "Improved the page structure and visual hierarchy to make updates easier to follow.",
+      "Polished the layout with clearer spacing, cards, and consistency across sections.",
+      "Prepared the interface for future version tracking and release-style notes.",
+    ],
+  },
+];
 
 const state = {
   analysis: null,
@@ -484,6 +499,25 @@ function renderAll() {
   renderFactors();
   renderRecommendations();
   renderSimulation();
+}
+
+function renderUpdates() {
+  if (!elements.updateList) return;
+
+  elements.updateList.innerHTML = APP_UPDATES.map(
+    (update) => `
+      <article class="update-card">
+        <div class="update-topline">
+          <span class="update-version">${escapeHtml(update.version)}</span>
+          <span class="update-date">${escapeHtml(update.date)}</span>
+        </div>
+        <h3>${escapeHtml(update.title)}</h3>
+        <ul>
+          ${update.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+      </article>
+    `,
+  ).join("");
 }
 
 function renderLocalState() {
@@ -1818,6 +1852,7 @@ function bindEvents() {
 
 async function initialize() {
   bindEvents();
+  renderUpdates();
   const restored = restoreLocalState();
   elements.capacityInput.value = state.weeklyAvailableHours;
   elements.taskSearch.value = state.search;
