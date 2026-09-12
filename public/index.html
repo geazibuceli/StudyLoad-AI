@@ -1,53 +1,116 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="StudyBalance AI forecasts academic overload, explains the result, and suggests practical planning actions.">
-    <meta name="theme-color" content="#101c2c">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="StudyBalance AI forecasts academic overload, explains the result, and suggests practical planning actions."
+    />
+    <meta name="theme-color" content="#101c2c" />
     <title>StudyBalance AI — Plan before pressure peaks</title>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
     <script src="/app.js" type="module"></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
 
     <svg class="svg-sprite" aria-hidden="true">
-      <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-      <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 0 4 22V5.5ZM20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5A2.5 2.5 0 0 1 20 22V5.5Z"/></symbol>
-      <symbol id="icon-bolt" viewBox="0 0 24 24"><path d="m13 2-8 12h7l-1 8 8-12h-7l1-8Z"/></symbol>
-      <symbol id="icon-calendar" viewBox="0 0 24 24"><path d="M7 2v3M17 2v3M3.5 9h17M5.5 4h13a2 2 0 0 1 2 2v14h-17V6a2 2 0 0 1 2-2Z"/></symbol>
-      <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
-      <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
-      <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
-      <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-      <symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 20h16"/></symbol>
-      <symbol id="icon-edit" viewBox="0 0 24 24"><path d="m4 16-.5 4.5L8 20l11-11-4-4L4 16ZM13.5 6.5l4 4"/></symbol>
-      <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
-      <symbol id="icon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></symbol>
-      <symbol id="icon-keyboard" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 13h.01M10 13h.01M14 13h4M7 16h10"/></symbol>
-      <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
-      <symbol id="icon-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
-      <symbol id="icon-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
-      <symbol id="icon-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></symbol>
-      <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-      <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M18.5 10A7 7 0 0 0 6 7.5L4 12M5.5 14A7 7 0 0 0 18 16.5l2-4.5"/></symbol>
-      <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
-      <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5c0 5 3 8.5 7.5 10 4.5-1.5 7.5-5 7.5-10V6L12 3Z"/><path d="m9 12 2 2 4-5"/></symbol>
-      <symbol id="icon-sliders" viewBox="0 0 24 24"><path d="M4 6h8M16 6h4M4 12h3M11 12h9M4 18h10M18 18h2"/><circle cx="14" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></symbol>
-      <symbol id="icon-spark" viewBox="0 0 24 24"><path d="m12 2 1.4 5.1L18 9l-4.6 1.9L12 16l-1.4-5.1L6 9l4.6-1.9L12 2ZM19 15l.7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7L19 15Z"/></symbol>
-      <symbol id="icon-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
-      <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 3h6l1 4H8l1-4ZM7 7l1 14h8l1-14M10 11v6M14 11v6"/></symbol>
-      <symbol id="icon-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-9M16 6h5v5"/></symbol>
-      <symbol id="icon-wand" viewBox="0 0 24 24"><path d="m4 20 11-11 3 3L7 23 4 20ZM13 5l1-3 1 3 3 1-3 1-1 3-1-3-3-1 3-1ZM19 14l.7-2 .8 2 2 .8-2 .7-.8 2-.7-2-2-.7 2-.8Z"/></symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+      <symbol id="icon-book" viewBox="0 0 24 24">
+        <path
+          d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 0 4 22V5.5ZM20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5A2.5 2.5 0 0 1 20 22V5.5Z"
+        />
+      </symbol>
+      <symbol id="icon-bolt" viewBox="0 0 24 24">
+        <path d="m13 2-8 12h7l-1 8 8-12h-7l1-8Z" />
+      </symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24">
+        <path d="M7 2v3M17 2v3M3.5 9h17M5.5 4h13a2 2 0 0 1 2 2v14h-17V6a2 2 0 0 1 2-2Z" />
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" /></symbol>
+      <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" /></symbol>
+      <symbol id="icon-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" /></symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24">
+        <path d="M12 3v12m-5-5 5 5 5-5M4 20h16" />
+      </symbol>
+      <symbol id="icon-edit" viewBox="0 0 24 24">
+        <path d="m4 16-.5 4.5L8 20l11-11-4-4L4 16ZM13.5 6.5l4 4" />
+      </symbol>
+      <symbol id="icon-eye" viewBox="0 0 24 24">
+        <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+        <circle cx="12" cy="12" r="2.5" />
+      </symbol>
+      <symbol id="icon-info" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 11v6M12 7.5v.5" />
+      </symbol>
+      <symbol id="icon-keyboard" viewBox="0 0 24 24">
+        <rect x="2.5" y="5" width="19" height="14" rx="2" />
+        <path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 13h.01M10 13h.01M14 13h4M7 16h10" />
+      </symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24">
+        <rect x="5" y="10" width="14" height="11" rx="2" />
+        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+      </symbol>
+      <symbol id="icon-minus" viewBox="0 0 24 24"><path d="M5 12h14" /></symbol>
+      <symbol id="icon-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" /></symbol>
+      <symbol id="icon-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z" /></symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+      <symbol id="icon-refresh" viewBox="0 0 24 24">
+        <path
+          d="M20 7v5h-5M4 17v-5h5M18.5 10A7 7 0 0 0 6 7.5L4 12M5.5 14A7 7 0 0 0 18 16.5l2-4.5"
+        />
+      </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m16 16 5 5" />
+      </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path d="M12 3 4.5 6v5c0 5 3 8.5 7.5 10 4.5-1.5 7.5-5 7.5-10V6L12 3Z" />
+        <path d="m9 12 2 2 4-5" />
+      </symbol>
+      <symbol id="icon-sliders" viewBox="0 0 24 24">
+        <path d="M4 6h8M16 6h4M4 12h3M11 12h9M4 18h10M18 18h2" />
+        <circle cx="14" cy="6" r="2" />
+        <circle cx="9" cy="12" r="2" />
+        <circle cx="16" cy="18" r="2" />
+      </symbol>
+      <symbol id="icon-spark" viewBox="0 0 24 24">
+        <path
+          d="m12 2 1.4 5.1L18 9l-4.6 1.9L12 16l-1.4-5.1L6 9l4.6-1.9L12 2ZM19 15l.7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7L19 15Z"
+        />
+      </symbol>
+      <symbol id="icon-target" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="5" />
+        <circle cx="12" cy="12" r="1" />
+      </symbol>
+      <symbol id="icon-trash" viewBox="0 0 24 24">
+        <path d="M4 7h16M9 3h6l1 4H8l1-4ZM7 7l1 14h8l1-14M10 11v6M14 11v6" />
+      </symbol>
+      <symbol id="icon-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-9M16 6h5v5" /></symbol>
+      <symbol id="icon-wand" viewBox="0 0 24 24">
+        <path
+          d="m4 20 11-11 3 3L7 23 4 20ZM13 5l1-3 1 3 3 1-3 1-1 3-1-3-3-1 3-1ZM19 14l.7-2 .8 2 2 .8-2 .7-.8 2-.7-2-2-.7 2-.8Z"
+        />
+      </symbol>
     </svg>
 
     <header class="site-header">
       <div class="shell header-inner">
         <a class="brand" href="#top" aria-label="StudyBalance AI home">
           <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 44 44"><path d="M10 28c5-1 8-5 9-13 6 1 10 5 12 12"/><path d="M12 32h20M15 36h14"/><circle cx="31" cy="13" r="3"/></svg>
+            <svg viewBox="0 0 44 44">
+              <path d="M10 28c5-1 8-5 9-13 6 1 10 5 12 12" />
+              <path d="M12 32h20M15 36h14" />
+              <circle cx="31" cy="13" r="3" />
+            </svg>
           </span>
           <span><strong>StudyBalance</strong><small>AI planning companion</small></span>
         </a>
@@ -60,12 +123,17 @@
         </nav>
 
         <div class="header-tools">
-          <button class="command-trigger" id="command-button" type="button" aria-label="Open quick actions">
-            <svg class="icon"><use href="#icon-search"/></svg>
+          <button
+            class="command-trigger"
+            id="command-button"
+            type="button"
+            aria-label="Open quick actions"
+          >
+            <svg class="icon"><use href="#icon-search" /></svg>
             <span>Quick actions</span><kbd>Ctrl K</kbd>
           </button>
           <button class="privacy-pill" id="privacy-button" type="button">
-            <svg class="icon"><use href="#icon-lock"/></svg>
+            <svg class="icon"><use href="#icon-lock" /></svg>
             Local-first
           </button>
         </div>
@@ -79,48 +147,71 @@
         <div class="shell hero-grid">
           <div class="hero-copy">
             <div class="eyebrow"><span></span> Explainable AI for academic planning</div>
-            <h1>Plan before the<br><em>pressure peaks.</em></h1>
-            <p>Turn deadlines, study hours, and priorities into an early workload forecast—with clear reasons and a practical plan for the week ahead.</p>
+            <h1>Plan before the<br /><em>pressure peaks.</em></h1>
+            <p>
+              Turn deadlines, study hours, and priorities into an early workload forecast—with clear
+              reasons and a practical plan for the week ahead.
+            </p>
             <div class="hero-actions">
               <button class="button button-primary" id="hero-analyze-button" type="button">
                 Analyze my week
-                <svg class="icon"><use href="#icon-arrow"/></svg>
+                <svg class="icon"><use href="#icon-arrow" /></svg>
               </button>
               <button class="button button-ghost" id="load-demo-button" type="button">
-                <svg class="icon"><use href="#icon-spark"/></svg>
+                <svg class="icon"><use href="#icon-spark" /></svg>
                 Explore sample data
               </button>
             </div>
             <div class="hero-note">
-              <svg class="icon"><use href="#icon-shield"/></svg>
-              <span>No account or cloud database. Task names stay in your browser; only schedule structure is analyzed.</span>
+              <svg class="icon"><use href="#icon-shield" /></svg>
+              <span
+                >No account or cloud database. Task names stay in your browser; only schedule
+                structure is analyzed.</span
+              >
             </div>
           </div>
 
           <aside class="hero-preview" aria-label="Product workflow">
-            <div class="preview-topline"><span>YOUR WEEK, MADE CLEAR</span><span class="live-dot">INTERACTIVE</span></div>
+            <div class="preview-topline">
+              <span>YOUR WEEK, MADE CLEAR</span><span class="live-dot">INTERACTIVE</span>
+            </div>
             <ol class="workflow-list">
               <li>
                 <span class="workflow-number">01</span>
-                <span class="workflow-icon"><svg class="icon"><use href="#icon-calendar"/></svg></span>
-                <span><strong>Add your schedule</strong><small>Deadlines, exams, and study time</small></span>
-                <svg class="icon workflow-chevron"><use href="#icon-chevron"/></svg>
+                <span class="workflow-icon"
+                  ><svg class="icon"><use href="#icon-calendar" /></svg
+                ></span>
+                <span
+                  ><strong>Add your schedule</strong
+                  ><small>Deadlines, exams, and study time</small></span
+                >
+                <svg class="icon workflow-chevron"><use href="#icon-chevron" /></svg>
               </li>
               <li>
                 <span class="workflow-number">02</span>
-                <span class="workflow-icon accent"><svg class="icon"><use href="#icon-trend"/></svg></span>
-                <span><strong>See workload early</strong><small>Low, moderate, or high demand</small></span>
-                <svg class="icon workflow-chevron"><use href="#icon-chevron"/></svg>
+                <span class="workflow-icon accent"
+                  ><svg class="icon"><use href="#icon-trend" /></svg
+                ></span>
+                <span
+                  ><strong>See workload early</strong
+                  ><small>Low, moderate, or high demand</small></span
+                >
+                <svg class="icon workflow-chevron"><use href="#icon-chevron" /></svg>
               </li>
               <li>
                 <span class="workflow-number">03</span>
-                <span class="workflow-icon warm"><svg class="icon"><use href="#icon-target"/></svg></span>
-                <span><strong>Act on a clear plan</strong><small>Prioritized, traceable suggestions</small></span>
-                <svg class="icon workflow-chevron"><use href="#icon-chevron"/></svg>
+                <span class="workflow-icon warm"
+                  ><svg class="icon"><use href="#icon-target" /></svg
+                ></span>
+                <span
+                  ><strong>Act on a clear plan</strong
+                  ><small>Prioritized, traceable suggestions</small></span
+                >
+                <svg class="icon workflow-chevron"><use href="#icon-chevron" /></svg>
               </li>
             </ol>
             <div class="preview-disclaimer">
-              <svg class="icon"><use href="#icon-info"/></svg>
+              <svg class="icon"><use href="#icon-info" /></svg>
               Planning support—not a health or clinical assessment.
             </div>
           </aside>
@@ -141,53 +232,104 @@
             <div class="workspace-actions">
               <label class="capacity-control">
                 <span>Weekly capacity</span>
-                <span class="number-input-wrap"><input id="capacity-input" type="number" min="1" max="168" value="18" aria-label="Weekly available study hours"><span>hours</span></span>
+                <span class="number-input-wrap"
+                  ><input
+                    id="capacity-input"
+                    type="number"
+                    min="1"
+                    max="168"
+                    value="18"
+                    aria-label="Weekly available study hours"
+                  /><span>hours</span></span
+                >
               </label>
               <button class="button button-secondary" id="refresh-button" type="button">
-                <svg class="icon"><use href="#icon-refresh"/></svg>
+                <svg class="icon"><use href="#icon-refresh" /></svg>
                 Update forecast
               </button>
               <button class="button button-dark" id="focus-button" type="button">
-                <svg class="icon"><use href="#icon-bolt"/></svg>
+                <svg class="icon"><use href="#icon-bolt" /></svg>
                 Focus mode
               </button>
             </div>
           </div>
 
           <div class="notice" role="note">
-            <svg class="icon"><use href="#icon-info"/></svg>
-            <p><strong>What this forecast means:</strong> it estimates operational academic demand from your schedule. It does not measure stress, burnout, depression, or any health condition.</p>
+            <svg class="icon"><use href="#icon-info" /></svg>
+            <p>
+              <strong>What this forecast means:</strong> it estimates operational academic demand
+              from your schedule. It does not measure stress, burnout, depression, or any health
+              condition.
+            </p>
           </div>
 
           <div class="metric-grid" aria-label="Schedule summary">
             <article class="metric-card">
-              <span class="metric-icon blue"><svg class="icon"><use href="#icon-book"/></svg></span>
-              <div><span>Open tasks</span><strong id="metric-open-tasks">—</strong><small id="metric-open-caption">in your planner</small></div>
+              <span class="metric-icon blue"
+                ><svg class="icon"><use href="#icon-book" /></svg
+              ></span>
+              <div>
+                <span>Open tasks</span><strong id="metric-open-tasks">—</strong
+                ><small id="metric-open-caption">in your planner</small>
+              </div>
             </article>
             <article class="metric-card">
-              <span class="metric-icon purple"><svg class="icon"><use href="#icon-calendar"/></svg></span>
-              <div><span>Due this week</span><strong id="metric-due-week">—</strong><small id="metric-due-caption">next 7 days</small></div>
+              <span class="metric-icon purple"
+                ><svg class="icon"><use href="#icon-calendar" /></svg
+              ></span>
+              <div>
+                <span>Due this week</span><strong id="metric-due-week">—</strong
+                ><small id="metric-due-caption">next 7 days</small>
+              </div>
             </article>
             <article class="metric-card">
-              <span class="metric-icon orange"><svg class="icon"><use href="#icon-clock"/></svg></span>
-              <div><span>Work remaining</span><strong id="metric-hours">—</strong><small id="metric-hours-caption">estimated hours</small></div>
+              <span class="metric-icon orange"
+                ><svg class="icon"><use href="#icon-clock" /></svg
+              ></span>
+              <div>
+                <span>Work remaining</span><strong id="metric-hours">—</strong
+                ><small id="metric-hours-caption">estimated hours</small>
+              </div>
             </article>
             <article class="metric-card">
-              <span class="metric-icon green"><svg class="icon"><use href="#icon-target"/></svg></span>
-              <div><span>Capacity use</span><strong id="metric-capacity">—</strong><small id="metric-capacity-caption">of available time</small></div>
+              <span class="metric-icon green"
+                ><svg class="icon"><use href="#icon-target" /></svg
+              ></span>
+              <div>
+                <span>Capacity use</span><strong id="metric-capacity">—</strong
+                ><small id="metric-capacity-caption">of available time</small>
+              </div>
             </article>
           </div>
 
           <article class="panel week-explorer" id="week-explorer">
             <div class="panel-heading week-heading">
-              <div><span class="panel-kicker">INTERACTIVE WEEK</span><h3>Explore where your effort goes</h3></div>
-              <div class="week-hint"><svg class="icon"><use href="#icon-calendar"/></svg><span>Select a day or drag a flexible task onto it</span></div>
+              <div>
+                <span class="panel-kicker">INTERACTIVE WEEK</span>
+                <h3>Explore where your effort goes</h3>
+              </div>
+              <div class="week-hint">
+                <svg class="icon"><use href="#icon-calendar" /></svg
+                ><span>Select a day or drag a flexible task onto it</span>
+              </div>
             </div>
-            <div class="week-day-grid" id="week-day-grid" role="group" aria-label="Seven-day workload explorer"></div>
+            <div
+              class="week-day-grid"
+              id="week-day-grid"
+              role="group"
+              aria-label="Seven-day workload explorer"
+            ></div>
             <div class="day-drilldown" id="day-drilldown" aria-live="polite">
               <div class="day-drilldown-summary">
-                <span class="selected-date-icon"><svg class="icon"><use href="#icon-calendar"/></svg></span>
-                <div><span id="selected-day-label">Select a day</span><strong id="selected-day-summary">See modeled effort and contributing tasks.</strong></div>
+                <span class="selected-date-icon"
+                  ><svg class="icon"><use href="#icon-calendar" /></svg
+                ></span>
+                <div>
+                  <span id="selected-day-label">Select a day</span
+                  ><strong id="selected-day-summary"
+                    >See modeled effort and contributing tasks.</strong
+                  >
+                </div>
               </div>
               <div class="selected-day-tasks" id="selected-day-tasks"></div>
             </div>
@@ -196,43 +338,91 @@
           <div class="dashboard-grid">
             <article class="panel risk-panel" id="risk-panel" aria-live="polite">
               <div class="panel-heading">
-                <div><span class="panel-kicker">7-DAY FORECAST</span><h3>Academic demand</h3></div>
-                <button class="icon-button" id="risk-info-button" type="button" aria-label="About this score"><svg class="icon"><use href="#icon-info"/></svg></button>
+                <div>
+                  <span class="panel-kicker">7-DAY FORECAST</span>
+                  <h3>Academic demand</h3>
+                </div>
+                <button
+                  class="icon-button"
+                  id="risk-info-button"
+                  type="button"
+                  aria-label="About this score"
+                >
+                  <svg class="icon"><use href="#icon-info" /></svg>
+                </button>
               </div>
               <div class="risk-content">
-                <div class="gauge" id="risk-gauge" role="meter" aria-label="Academic demand forecast score" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div
+                  class="gauge"
+                  id="risk-gauge"
+                  role="meter"
+                  aria-label="Academic demand forecast score"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow="0"
+                >
                   <svg viewBox="0 0 180 110" aria-hidden="true">
-                    <path class="gauge-track" d="M20 95a70 70 0 0 1 140 0" pathLength="100"/>
-                    <path class="gauge-value" id="gauge-value" d="M20 95a70 70 0 0 1 140 0" pathLength="100"/>
+                    <path class="gauge-track" d="M20 95a70 70 0 0 1 140 0" pathLength="100" />
+                    <path
+                      class="gauge-value"
+                      id="gauge-value"
+                      d="M20 95a70 70 0 0 1 140 0"
+                      pathLength="100"
+                    />
                   </svg>
-                  <div class="gauge-label"><strong id="risk-score">—</strong><span>/ 100</span></div>
+                  <div class="gauge-label">
+                    <strong id="risk-score">—</strong><span>/ 100</span>
+                  </div>
                 </div>
                 <div class="risk-summary">
                   <span class="risk-badge" id="risk-badge">Waiting for data</span>
-                  <p id="risk-message">Add tasks or load the sample schedule to generate a forecast.</p>
+                  <p id="risk-message">
+                    Add tasks or load the sample schedule to generate a forecast.
+                  </p>
                   <small id="confidence-label">Model confidence will appear here.</small>
                 </div>
               </div>
               <div class="probability-list" aria-label="Model probabilities">
-                <div><span>Low</span><progress id="probability-low" max="100" value="0"></progress><strong id="probability-low-value">0%</strong></div>
-                <div><span>Moderate</span><progress id="probability-moderate" max="100" value="0"></progress><strong id="probability-moderate-value">0%</strong></div>
-                <div><span>High</span><progress id="probability-high" max="100" value="0"></progress><strong id="probability-high-value">0%</strong></div>
+                <div>
+                  <span>Low</span><progress id="probability-low" max="100" value="0"></progress
+                  ><strong id="probability-low-value">0%</strong>
+                </div>
+                <div>
+                  <span>Moderate</span
+                  ><progress id="probability-moderate" max="100" value="0"></progress
+                  ><strong id="probability-moderate-value">0%</strong>
+                </div>
+                <div>
+                  <span>High</span><progress id="probability-high" max="100" value="0"></progress
+                  ><strong id="probability-high-value">0%</strong>
+                </div>
               </div>
             </article>
 
             <article class="panel load-panel">
               <div class="panel-heading">
-                <div><span class="panel-kicker">LOAD MAP</span><h3>Where the work lands</h3></div>
+                <div>
+                  <span class="panel-kicker">LOAD MAP</span>
+                  <h3>Where the work lands</h3>
+                </div>
                 <span class="legend"><i></i> Planned hours</span>
               </div>
               <div class="load-chart" id="load-chart" aria-label="Estimated workload by day"></div>
-              <div class="chart-caption"><span>Today</span><span id="chart-capacity-label">Daily guide: 2.6 h</span><span>+6 days</span></div>
+              <div class="chart-caption">
+                <span>Today</span><span id="chart-capacity-label">Daily guide: 2.6 h</span
+                ><span>+6 days</span>
+              </div>
             </article>
 
             <article class="panel factors-panel">
               <div class="panel-heading">
-                <div><span class="panel-kicker">EXPLAINABLE AI</span><h3>What influenced the result</h3></div>
-                <span class="transparent-badge"><svg class="icon"><use href="#icon-eye"/></svg> Transparent</span>
+                <div>
+                  <span class="panel-kicker">EXPLAINABLE AI</span>
+                  <h3>What influenced the result</h3>
+                </div>
+                <span class="transparent-badge"
+                  ><svg class="icon"><use href="#icon-eye" /></svg> Transparent</span
+                >
               </div>
               <div class="factor-list" id="factor-list">
                 <div class="empty-inline">No factors to show yet.</div>
@@ -241,7 +431,10 @@
 
             <article class="panel action-panel">
               <div class="panel-heading">
-                <div><span class="panel-kicker">PREVENTIVE PLAN</span><h3>Your next planning actions</h3></div>
+                <div>
+                  <span class="panel-kicker">PREVENTIVE PLAN</span>
+                  <h3>Your next planning actions</h3>
+                </div>
                 <span class="action-count" id="action-count">0 actions</span>
               </div>
               <div class="recommendation-list" id="recommendation-list">
@@ -256,49 +449,85 @@
         <div class="shell simulator-grid">
           <div class="simulator-copy">
             <div class="section-kicker light">WHAT-IF SIMULATOR</div>
-            <h2>See the impact before<br>changing your plan.</h2>
-            <p>Adjust capacity or move a flexible deadline and compare the temporary result. Nothing changes in your planner until you explicitly apply the scenario.</p>
+            <h2>See the impact before<br />changing your plan.</h2>
+            <p>
+              Adjust capacity or move a flexible deadline and compare the temporary result. Nothing
+              changes in your planner until you explicitly apply the scenario.
+            </p>
             <button class="button button-light" id="simulate-button" type="button">
-              <svg class="icon"><use href="#icon-wand"/></svg>
+              <svg class="icon"><use href="#icon-wand" /></svg>
               Auto-build a scenario
             </button>
           </div>
           <div class="simulation-card" id="simulation-card">
             <div class="scenario-controls">
               <label class="scenario-field scenario-wide">
-                <span><strong>Available study time</strong><output id="scenario-capacity-output">18 h</output></span>
-                <input id="scenario-capacity" type="range" min="1" max="60" step="1" value="18">
+                <span
+                  ><strong>Available study time</strong
+                  ><output id="scenario-capacity-output">18 h</output></span
+                >
+                <input id="scenario-capacity" type="range" min="1" max="60" step="1" value="18" />
               </label>
               <label class="scenario-field">
                 <span><strong>Flexible task</strong></span>
-                <select id="scenario-task-select" aria-label="Task to move in the temporary scenario"><option value="">Capacity only</option></select>
+                <select
+                  id="scenario-task-select"
+                  aria-label="Task to move in the temporary scenario"
+                >
+                  <option value="">Capacity only</option>
+                </select>
               </label>
               <label class="scenario-field">
-                <span><strong>Move deadline</strong><output id="scenario-shift-output">+0 days</output></span>
-                <input id="scenario-shift" type="range" min="0" max="14" step="1" value="0">
+                <span
+                  ><strong>Move deadline</strong
+                  ><output id="scenario-shift-output">+0 days</output></span
+                >
+                <input id="scenario-shift" type="range" min="0" max="14" step="1" value="0" />
               </label>
               <div class="scenario-buttons scenario-wide">
-                <button class="button button-light" id="preview-scenario-button" type="button"><svg class="icon"><use href="#icon-eye"/></svg> Preview scenario</button>
-                <button class="text-button scenario-reset" id="reset-scenario-button" type="button"><svg class="icon"><use href="#icon-refresh"/></svg> Reset</button>
+                <button class="button button-light" id="preview-scenario-button" type="button">
+                  <svg class="icon"><use href="#icon-eye" /></svg> Preview scenario
+                </button>
+                <button class="text-button scenario-reset" id="reset-scenario-button" type="button">
+                  <svg class="icon"><use href="#icon-refresh" /></svg> Reset
+                </button>
               </div>
             </div>
             <div class="simulation-placeholder" id="simulation-placeholder">
-              <span class="simulation-icon"><svg class="icon"><use href="#icon-trend"/></svg></span>
+              <span class="simulation-icon"
+                ><svg class="icon"><use href="#icon-trend" /></svg
+              ></span>
               <strong>Run a temporary scenario</strong>
               <p>We will compare your current forecast with one possible schedule adjustment.</p>
             </div>
             <div class="simulation-result hidden" id="simulation-result" aria-live="polite">
               <div class="simulation-comparison">
-                <div><span>Current</span><strong id="simulation-before">—</strong><small>forecast score</small></div>
-                <svg class="icon"><use href="#icon-arrow"/></svg>
-                <div class="after"><span>Simulated</span><strong id="simulation-after">—</strong><small>forecast score</small></div>
+                <div>
+                  <span>Current</span><strong id="simulation-before">—</strong
+                  ><small>forecast score</small>
+                </div>
+                <svg class="icon"><use href="#icon-arrow" /></svg>
+                <div class="after">
+                  <span>Simulated</span><strong id="simulation-after">—</strong
+                  ><small>forecast score</small>
+                </div>
               </div>
               <div class="simulation-change">
-                <span class="simulation-task-icon"><svg class="icon"><use href="#icon-calendar"/></svg></span>
-                <div><span>Temporary adjustment</span><strong id="simulation-description">—</strong></div>
+                <span class="simulation-task-icon"
+                  ><svg class="icon"><use href="#icon-calendar" /></svg
+                ></span>
+                <div>
+                  <span>Temporary adjustment</span><strong id="simulation-description">—</strong>
+                </div>
               </div>
               <div class="simulation-deltas" id="simulation-deltas"></div>
-              <button class="button button-dark button-full" id="apply-simulation-button" type="button">Apply this scenario</button>
+              <button
+                class="button button-dark button-full"
+                id="apply-simulation-button"
+                type="button"
+              >
+                Apply this scenario
+              </button>
             </div>
           </div>
         </div>
@@ -310,37 +539,83 @@
             <div>
               <div class="section-kicker">YOUR PLANNER</div>
               <h2>Academic tasks</h2>
-              <p>Only schedule structure is used by the model; task titles and subjects are never prediction features.</p>
+              <p>
+                Only schedule structure is used by the model; task titles and subjects are never
+                prediction features.
+              </p>
             </div>
             <div class="planner-actions">
-              <button class="button button-ghost-dark" id="export-button" type="button"><svg class="icon"><use href="#icon-download"/></svg> Export CSV</button>
-              <button class="button button-primary" id="add-task-button" type="button"><svg class="icon"><use href="#icon-plus"/></svg> Add task</button>
+              <button class="button button-ghost-dark" id="export-button" type="button">
+                <svg class="icon"><use href="#icon-download" /></svg> Export CSV
+              </button>
+              <button class="button button-primary" id="add-task-button" type="button">
+                <svg class="icon"><use href="#icon-plus" /></svg> Add task
+              </button>
             </div>
           </div>
 
           <div class="planner-toolbar">
             <div class="planner-view-controls">
-              <label class="planner-search"><svg class="icon"><use href="#icon-search"/></svg><input id="task-search" type="search" placeholder="Search tasks or courses" aria-label="Search tasks or courses"><kbd>/</kbd></label>
-              <label class="sort-control"><svg class="icon"><use href="#icon-sliders"/></svg><select id="task-sort" aria-label="Sort tasks"><option value="deadline">Deadline</option><option value="priority">Priority</option><option value="effort">Remaining effort</option><option value="progress">Progress</option></select></label>
+              <label class="planner-search"
+                ><svg class="icon"><use href="#icon-search" /></svg
+                ><input
+                  id="task-search"
+                  type="search"
+                  placeholder="Search tasks or courses"
+                  aria-label="Search tasks or courses"
+                /><kbd>/</kbd></label
+              >
+              <label class="sort-control"
+                ><svg class="icon"><use href="#icon-sliders" /></svg
+                ><select id="task-sort" aria-label="Sort tasks">
+                  <option value="deadline">Deadline</option>
+                  <option value="priority">Priority</option>
+                  <option value="effort">Remaining effort</option>
+                  <option value="progress">Progress</option>
+                </select></label
+              >
             </div>
             <div class="planner-toolbar-row">
               <div class="filter-group" role="group" aria-label="Filter tasks">
-                <button class="filter-button active" data-filter="open" type="button" aria-pressed="true">Open <span id="filter-count-open">0</span></button>
-                <button class="filter-button" data-filter="week" type="button" aria-pressed="false">Due this week <span id="filter-count-week">0</span></button>
-                <button class="filter-button" data-filter="high" type="button" aria-pressed="false">High priority <span id="filter-count-high">0</span></button>
-                <button class="filter-button" data-filter="all" type="button" aria-pressed="false">All <span id="filter-count-all">0</span></button>
+                <button
+                  class="filter-button active"
+                  data-filter="open"
+                  type="button"
+                  aria-pressed="true"
+                >
+                  Open <span id="filter-count-open">0</span>
+                </button>
+                <button class="filter-button" data-filter="week" type="button" aria-pressed="false">
+                  Due this week <span id="filter-count-week">0</span>
+                </button>
+                <button class="filter-button" data-filter="high" type="button" aria-pressed="false">
+                  High priority <span id="filter-count-high">0</span>
+                </button>
+                <button class="filter-button" data-filter="all" type="button" aria-pressed="false">
+                  All <span id="filter-count-all">0</span>
+                </button>
               </div>
-              <span class="planner-result-count" id="planner-result-count" aria-live="polite"></span>
-              <button class="text-button danger" id="clear-data-button" type="button"><svg class="icon"><use href="#icon-trash"/></svg> Clear local data</button>
+              <span
+                class="planner-result-count"
+                id="planner-result-count"
+                aria-live="polite"
+              ></span>
+              <button class="text-button danger" id="clear-data-button" type="button">
+                <svg class="icon"><use href="#icon-trash" /></svg> Clear local data
+              </button>
             </div>
           </div>
 
           <div class="task-list" id="task-list"></div>
           <div class="task-empty hidden" id="task-empty">
-            <span><svg class="icon"><use href="#icon-calendar"/></svg></span>
+            <span
+              ><svg class="icon"><use href="#icon-calendar" /></svg
+            ></span>
             <h3>Your planner is ready</h3>
             <p>Add a deadline, exam, or study task to build your first workload forecast.</p>
-            <button class="button button-primary" id="empty-add-button" type="button"><svg class="icon"><use href="#icon-plus"/></svg> Add your first task</button>
+            <button class="button button-primary" id="empty-add-button" type="button">
+              <svg class="icon"><use href="#icon-plus" /></svg> Add your first task
+            </button>
           </div>
         </div>
       </section>
@@ -352,18 +627,54 @@
               <div class="section-kicker">RESPONSIBLE BY DESIGN</div>
               <h2>Useful insight, honest limits.</h2>
             </div>
-            <p>This proof of concept separates prediction, explanation, and recommendation so every result can be understood and challenged.</p>
+            <p>
+              This proof of concept separates prediction, explanation, and recommendation so every
+              result can be understood and challenged.
+            </p>
           </div>
           <div class="principle-grid">
-            <article><span>01</span><svg class="icon"><use href="#icon-eye"/></svg><h3>Explainable</h3><p>Each forecast includes local counterfactual factors, not just a label.</p></article>
-            <article><span>02</span><svg class="icon"><use href="#icon-lock"/></svg><h3>Private by default</h3><p>Your planner is saved only in browser storage and can be erased anytime.</p></article>
-            <article><span>03</span><svg class="icon"><use href="#icon-shield"/></svg><h3>Non-diagnostic</h3><p>The system estimates schedule demand. It never infers a health condition.</p></article>
-            <article><span>04</span><svg class="icon"><use href="#icon-spark"/></svg><h3>Scientifically honest</h3><p>The demo model uses synthetic data and requires validation before real-world use.</p></article>
+            <article>
+              <span>01</span><svg class="icon"><use href="#icon-eye" /></svg>
+              <h3>Explainable</h3>
+              <p>Each forecast includes local counterfactual factors, not just a label.</p>
+            </article>
+            <article>
+              <span>02</span><svg class="icon"><use href="#icon-lock" /></svg>
+              <h3>Private by default</h3>
+              <p>Your planner is saved only in browser storage and can be erased anytime.</p>
+            </article>
+            <article>
+              <span>03</span><svg class="icon"><use href="#icon-shield" /></svg>
+              <h3>Non-diagnostic</h3>
+              <p>The system estimates schedule demand. It never infers a health condition.</p>
+            </article>
+            <article>
+              <span>04</span><svg class="icon"><use href="#icon-spark" /></svg>
+              <h3>Scientifically honest</h3>
+              <p>
+                The demo model uses synthetic data and requires validation before real-world use.
+              </p>
+            </article>
           </div>
           <div class="sdg-strip">
-            <div><span class="sdg-number sdg-three">3</span><p><strong>Good Health and Well-being</strong><small>Support sustainable academic routines.</small></p></div>
-            <div><span class="sdg-number sdg-four">4</span><p><strong>Quality Education</strong><small>Turn planning data into actionable support.</small></p></div>
-            <a href="https://sdgs.un.org/goals" target="_blank" rel="noreferrer">United Nations Sustainable Development Goals <svg class="icon"><use href="#icon-arrow"/></svg></a>
+            <div>
+              <span class="sdg-number sdg-three">3</span>
+              <p>
+                <strong>Good Health and Well-being</strong
+                ><small>Support sustainable academic routines.</small>
+              </p>
+            </div>
+            <div>
+              <span class="sdg-number sdg-four">4</span>
+              <p>
+                <strong>Quality Education</strong
+                ><small>Turn planning data into actionable support.</small>
+              </p>
+            </div>
+            <a href="https://sdgs.un.org/goals" target="_blank" rel="noreferrer"
+              >United Nations Sustainable Development Goals
+              <svg class="icon"><use href="#icon-arrow" /></svg
+            ></a>
           </div>
         </div>
       </section>
@@ -372,100 +683,342 @@
     <footer>
       <div class="shell footer-inner">
         <a class="brand footer-brand" href="#top">
-          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 44"><path d="M10 28c5-1 8-5 9-13 6 1 10 5 12 12"/><path d="M12 32h20M15 36h14"/><circle cx="31" cy="13" r="3"/></svg></span>
+          <span class="brand-mark" aria-hidden="true"
+            ><svg viewBox="0 0 44 44">
+              <path d="M10 28c5-1 8-5 9-13 6 1 10 5 12 12" />
+              <path d="M12 32h20M15 36h14" />
+              <circle cx="31" cy="13" r="3" /></svg
+          ></span>
           <span><strong>StudyBalance</strong><small>Explainable academic planning</small></span>
         </a>
         <p>Open-source research prototype · MIT License · Built with responsible AI principles</p>
-        <button class="text-button" id="footer-privacy-button" type="button">Privacy &amp; limitations</button>
+        <button class="text-button" id="footer-privacy-button" type="button">
+          Privacy &amp; limitations
+        </button>
       </div>
     </footer>
 
     <dialog class="modal task-modal" id="task-dialog" aria-labelledby="task-dialog-title">
       <form method="dialog" id="task-form">
         <div class="modal-header">
-          <div><span class="panel-kicker">PLANNER</span><h2 id="task-dialog-title">Add an academic task</h2></div>
-          <button class="icon-button" id="close-task-dialog" type="button" aria-label="Close"><svg class="icon"><use href="#icon-close"/></svg></button>
+          <div>
+            <span class="panel-kicker">PLANNER</span>
+            <h2 id="task-dialog-title">Add an academic task</h2>
+          </div>
+          <button class="icon-button" id="close-task-dialog" type="button" aria-label="Close">
+            <svg class="icon"><use href="#icon-close" /></svg>
+          </button>
         </div>
-        <input id="task-id" type="hidden">
+        <input id="task-id" type="hidden" />
         <div class="form-grid">
-          <label class="field field-wide"><span>Task title</span><input id="task-title" name="title" type="text" maxlength="90" placeholder="e.g. Submit research proposal" required></label>
-          <label class="field field-wide"><span>Subject or course</span><input id="task-subject" name="subject" type="text" maxlength="70" placeholder="e.g. Research Methods" required></label>
-          <label class="field"><span>Type</span><select id="task-type" name="type" required><option value="assignment">Assignment</option><option value="exam">Exam</option><option value="project">Project</option><option value="reading">Reading</option><option value="other">Other</option></select></label>
-          <label class="field"><span>Deadline</span><input id="task-deadline" name="deadline" type="date" required></label>
-          <label class="field"><span>Estimated hours</span><input id="task-hours" name="estimatedHours" type="number" min="0.5" max="200" step="0.5" value="2" required></label>
-          <label class="field"><span>Progress</span><span class="range-line"><input id="task-progress" name="progress" type="range" min="0" max="100" step="5" value="0"><output id="progress-output">0%</output></span></label>
-          <label class="field"><span>Priority</span><select id="task-priority" name="priority" required><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
-          <label class="checkbox-field"><input id="task-flexible" name="flexible" type="checkbox" checked><span><strong>Flexible deadline</strong><small>Allow the simulator to test moving this task.</small></span></label>
+          <label class="field field-wide"
+            ><span>Task title</span
+            ><input
+              id="task-title"
+              name="title"
+              type="text"
+              maxlength="90"
+              placeholder="e.g. Submit research proposal"
+              required
+          /></label>
+          <label class="field field-wide"
+            ><span>Subject or course</span
+            ><input
+              id="task-subject"
+              name="subject"
+              type="text"
+              maxlength="70"
+              placeholder="e.g. Research Methods"
+              required
+          /></label>
+          <label class="field"
+            ><span>Type</span
+            ><select id="task-type" name="type" required>
+              <option value="assignment">Assignment</option>
+              <option value="exam">Exam</option>
+              <option value="project">Project</option>
+              <option value="reading">Reading</option>
+              <option value="other">Other</option>
+            </select></label
+          >
+          <label class="field"
+            ><span>Deadline</span><input id="task-deadline" name="deadline" type="date" required
+          /></label>
+          <label class="field"
+            ><span>Estimated hours</span
+            ><input
+              id="task-hours"
+              name="estimatedHours"
+              type="number"
+              min="0.5"
+              max="200"
+              step="0.5"
+              value="2"
+              required
+          /></label>
+          <label class="field"
+            ><span>Progress</span
+            ><span class="range-line"
+              ><input
+                id="task-progress"
+                name="progress"
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                value="0"
+              /><output id="progress-output">0%</output></span
+            ></label
+          >
+          <label class="field"
+            ><span>Priority</span
+            ><select id="task-priority" name="priority" required>
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select></label
+          >
+          <label class="checkbox-field"
+            ><input id="task-flexible" name="flexible" type="checkbox" checked /><span
+              ><strong>Flexible deadline</strong
+              ><small>Allow the simulator to test moving this task.</small></span
+            ></label
+          >
         </div>
         <div class="modal-actions">
-          <button class="button button-ghost-dark" id="cancel-task-button" type="button">Cancel</button>
-          <button class="button button-primary" type="submit"><svg class="icon"><use href="#icon-check"/></svg> Save task</button>
+          <button class="button button-ghost-dark" id="cancel-task-button" type="button">
+            Cancel
+          </button>
+          <button class="button button-primary" type="submit">
+            <svg class="icon"><use href="#icon-check" /></svg> Save task
+          </button>
         </div>
       </form>
     </dialog>
 
     <dialog class="modal info-modal" id="privacy-dialog" aria-labelledby="privacy-title">
       <div class="modal-header">
-        <div><span class="panel-kicker">TRANSPARENCY</span><h2 id="privacy-title">Privacy and responsible use</h2></div>
-        <button class="icon-button modal-close" type="button" aria-label="Close"><svg class="icon"><use href="#icon-close"/></svg></button>
+        <div>
+          <span class="panel-kicker">TRANSPARENCY</span>
+          <h2 id="privacy-title">Privacy and responsible use</h2>
+        </div>
+        <button class="icon-button modal-close" type="button" aria-label="Close">
+          <svg class="icon"><use href="#icon-close" /></svg>
+        </button>
       </div>
       <div class="info-content">
-        <section><span class="info-icon"><svg class="icon"><use href="#icon-lock"/></svg></span><div><h3>Private text, local storage</h3><p>Tasks are stored in this browser. Task and course names remain here; only structural fields such as dates, hours, progress, and priority are sent transiently to the current analysis server.</p></div></section>
-        <section><span class="info-icon"><svg class="icon"><use href="#icon-eye"/></svg></span><div><h3>Minimal prediction inputs</h3><p>The model uses counts, dates, remaining hours, priorities, and capacity. Private text is replaced with neutral placeholders before analysis.</p></div></section>
-        <section><span class="info-icon"><svg class="icon"><use href="#icon-shield"/></svg></span><div><h3>Not a medical tool</h3><p>StudyBalance does not diagnose, screen for, or treat stress, burnout, anxiety, depression, or any other health condition. Seek qualified support when you need it.</p></div></section>
-        <section><span class="info-icon"><svg class="icon"><use href="#icon-spark"/></svg></span><div><h3>Prototype limitations</h3><p>The model is trained on synthetic schedules. Its output demonstrates a technical approach and must be validated with consented, representative data before institutional use.</p></div></section>
+        <section>
+          <span class="info-icon"
+            ><svg class="icon"><use href="#icon-lock" /></svg
+          ></span>
+          <div>
+            <h3>Private text, local storage</h3>
+            <p>
+              Tasks are stored in this browser. Task and course names remain here; only structural
+              fields such as dates, hours, progress, and priority are sent transiently to the
+              current analysis server.
+            </p>
+          </div>
+        </section>
+        <section>
+          <span class="info-icon"
+            ><svg class="icon"><use href="#icon-eye" /></svg
+          ></span>
+          <div>
+            <h3>Minimal prediction inputs</h3>
+            <p>
+              The model uses counts, dates, remaining hours, priorities, and capacity. Private text
+              is replaced with neutral placeholders before analysis.
+            </p>
+          </div>
+        </section>
+        <section>
+          <span class="info-icon"
+            ><svg class="icon"><use href="#icon-shield" /></svg
+          ></span>
+          <div>
+            <h3>Not a medical tool</h3>
+            <p>
+              StudyBalance does not diagnose, screen for, or treat stress, burnout, anxiety,
+              depression, or any other health condition. Seek qualified support when you need it.
+            </p>
+          </div>
+        </section>
+        <section>
+          <span class="info-icon"
+            ><svg class="icon"><use href="#icon-spark" /></svg
+          ></span>
+          <div>
+            <h3>Prototype limitations</h3>
+            <p>
+              The model is trained on synthetic schedules. Its output demonstrates a technical
+              approach and must be validated with consented, representative data before
+              institutional use.
+            </p>
+          </div>
+        </section>
       </div>
       <button class="button button-dark button-full modal-close" type="button">I understand</button>
     </dialog>
 
     <dialog class="modal info-modal" id="score-dialog" aria-labelledby="score-title">
       <div class="modal-header">
-        <div><span class="panel-kicker">MODEL TRANSPARENCY</span><h2 id="score-title">How the workload score works</h2></div>
-        <button class="icon-button modal-close" type="button" aria-label="Close score explanation"><svg class="icon"><use href="#icon-close"/></svg></button>
+        <div>
+          <span class="panel-kicker">MODEL TRANSPARENCY</span>
+          <h2 id="score-title">How the workload score works</h2>
+        </div>
+        <button class="icon-button modal-close" type="button" aria-label="Close score explanation">
+          <svg class="icon"><use href="#icon-close" /></svg>
+        </button>
       </div>
       <div class="info-content">
-        <section><span class="info-icon"><svg class="icon"><use href="#icon-sliders"/></svg></span><div><h3>A schedule-only index</h3><p>The model uses counts, deadlines, remaining hours, priorities, progress, and the study capacity you enter. It does not use task names or infer a health state.</p></div></section>
-        <section><span class="info-icon"><svg class="icon"><use href="#icon-trend"/></svg></span><div><h3>From probabilities to 0–100</h3><p>The score is rounded from 50 times the moderate-demand probability plus 100 times the high-demand probability. The largest class probability sets the displayed level.</p></div></section>
-        <section><span class="info-icon"><svg class="icon"><use href="#icon-info"/></svg></span><div><h3>Confidence has limits</h3><p>Confidence is the model probability for the selected class, not a guarantee. The model was trained and checked only on synthetic schedules, so the score is not a validated student scale.</p></div></section>
+        <section>
+          <span class="info-icon"
+            ><svg class="icon"><use href="#icon-sliders" /></svg
+          ></span>
+          <div>
+            <h3>A schedule-only index</h3>
+            <p>
+              The model uses counts, deadlines, remaining hours, priorities, progress, and the study
+              capacity you enter. It does not use task names or infer a health state.
+            </p>
+          </div>
+        </section>
+        <section>
+          <span class="info-icon"
+            ><svg class="icon"><use href="#icon-trend" /></svg
+          ></span>
+          <div>
+            <h3>From probabilities to 0–100</h3>
+            <p>
+              The score is rounded from 50 times the moderate-demand probability plus 100 times the
+              high-demand probability. The largest class probability sets the displayed level.
+            </p>
+          </div>
+        </section>
+        <section>
+          <span class="info-icon"
+            ><svg class="icon"><use href="#icon-info" /></svg
+          ></span>
+          <div>
+            <h3>Confidence has limits</h3>
+            <p>
+              Confidence is the model probability for the selected class, not a guarantee. The model
+              was trained and checked only on synthetic schedules, so the score is not a validated
+              student scale.
+            </p>
+          </div>
+        </section>
       </div>
-      <button class="button button-dark button-full modal-close" type="button">Back to the forecast</button>
+      <button class="button button-dark button-full modal-close" type="button">
+        Back to the forecast
+      </button>
     </dialog>
 
     <dialog class="modal command-modal" id="command-dialog" aria-labelledby="command-title">
       <div class="command-search-row">
-        <svg class="icon"><use href="#icon-search"/></svg>
-        <input id="command-search" type="search" placeholder="Type an action…" autocomplete="off" aria-labelledby="command-title">
+        <svg class="icon"><use href="#icon-search" /></svg>
+        <input
+          id="command-search"
+          type="search"
+          placeholder="Type an action…"
+          autocomplete="off"
+          aria-labelledby="command-title"
+        />
         <kbd>Esc</kbd>
       </div>
       <h2 class="sr-only" id="command-title">Quick actions</h2>
       <div class="command-list" id="command-list">
-        <button data-command="add" type="button"><span><svg class="icon"><use href="#icon-plus"/></svg></span><span><strong>Add a new task</strong><small>Open the academic task form</small></span><kbd>N</kbd></button>
-        <button data-command="forecast" type="button"><span><svg class="icon"><use href="#icon-refresh"/></svg></span><span><strong>Update forecast</strong><small>Analyze the current seven-day plan</small></span><kbd>R</kbd></button>
-        <button data-command="focus" type="button"><span><svg class="icon"><use href="#icon-bolt"/></svg></span><span><strong>Open focus mode</strong><small>Build a bounded session plan</small></span><kbd>F</kbd></button>
-        <button data-command="planner" type="button"><span><svg class="icon"><use href="#icon-book"/></svg></span><span><strong>Go to planner</strong><small>Search, sort, or update tasks</small></span><kbd>P</kbd></button>
-        <button data-command="sample" type="button"><span><svg class="icon"><use href="#icon-spark"/></svg></span><span><strong>Load sample schedule</strong><small>Explore with artificial tasks</small></span></button>
-        <button data-command="privacy" type="button"><span><svg class="icon"><use href="#icon-shield"/></svg></span><span><strong>Privacy and limitations</strong><small>Review data handling and model scope</small></span></button>
+        <button data-command="add" type="button">
+          <span
+            ><svg class="icon"><use href="#icon-plus" /></svg></span
+          ><span><strong>Add a new task</strong><small>Open the academic task form</small></span
+          ><kbd>N</kbd>
+        </button>
+        <button data-command="forecast" type="button">
+          <span
+            ><svg class="icon"><use href="#icon-refresh" /></svg></span
+          ><span
+            ><strong>Update forecast</strong><small>Analyze the current seven-day plan</small></span
+          ><kbd>R</kbd>
+        </button>
+        <button data-command="focus" type="button">
+          <span
+            ><svg class="icon"><use href="#icon-bolt" /></svg></span
+          ><span><strong>Open focus mode</strong><small>Build a bounded session plan</small></span
+          ><kbd>F</kbd>
+        </button>
+        <button data-command="planner" type="button">
+          <span
+            ><svg class="icon"><use href="#icon-book" /></svg></span
+          ><span><strong>Go to planner</strong><small>Search, sort, or update tasks</small></span
+          ><kbd>P</kbd>
+        </button>
+        <button data-command="sample" type="button">
+          <span
+            ><svg class="icon"><use href="#icon-spark" /></svg></span
+          ><span
+            ><strong>Load sample schedule</strong><small>Explore with artificial tasks</small></span
+          >
+        </button>
+        <button data-command="privacy" type="button">
+          <span
+            ><svg class="icon"><use href="#icon-shield" /></svg></span
+          ><span
+            ><strong>Privacy and limitations</strong
+            ><small>Review data handling and model scope</small></span
+          >
+        </button>
       </div>
-      <div class="command-footer"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>Enter</kbd> select</span></div>
+      <div class="command-footer">
+        <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>Enter</kbd> select</span>
+      </div>
     </dialog>
 
     <dialog class="modal focus-modal" id="focus-dialog" aria-labelledby="focus-title">
       <div class="modal-header">
-        <div><span class="panel-kicker">FOCUS MODE</span><h2 id="focus-title">Turn the plan into one next step</h2></div>
-        <button class="icon-button focus-close" type="button" aria-label="Close focus mode"><svg class="icon"><use href="#icon-close"/></svg></button>
+        <div>
+          <span class="panel-kicker">FOCUS MODE</span>
+          <h2 id="focus-title">Turn the plan into one next step</h2>
+        </div>
+        <button class="icon-button focus-close" type="button" aria-label="Close focus mode">
+          <svg class="icon"><use href="#icon-close" /></svg>
+        </button>
       </div>
       <div class="focus-layout">
         <section class="focus-timer-panel">
-          <label class="focus-task-picker"><span>Focus task</span><select id="focus-task-select"></select></label>
-          <div class="focus-clock" id="focus-clock" role="timer" aria-live="off" aria-label="25 minutes remaining"><span id="focus-time">25:00</span><small>minutes remaining</small></div>
+          <label class="focus-task-picker"
+            ><span>Focus task</span
+            ><select id="focus-task-select"></select
+          ></label>
+          <div
+            class="focus-clock"
+            id="focus-clock"
+            role="timer"
+            aria-live="off"
+            aria-label="25 minutes remaining"
+          >
+            <span id="focus-time">25:00</span><small>minutes remaining</small>
+          </div>
           <div class="focus-duration" role="group" aria-label="Focus session duration">
             <button data-minutes="15" type="button" aria-pressed="false">15 min</button>
-            <button class="active" data-minutes="25" type="button" aria-pressed="true">25 min</button>
+            <button class="active" data-minutes="25" type="button" aria-pressed="true">
+              25 min
+            </button>
             <button data-minutes="45" type="button" aria-pressed="false">45 min</button>
           </div>
           <div class="focus-controls">
-            <button class="button button-primary" id="focus-start-button" type="button"><svg class="icon"><use href="#icon-play"/></svg><span>Start session</span></button>
-            <button class="icon-button focus-reset" id="focus-reset-button" type="button" aria-label="Reset timer"><svg class="icon"><use href="#icon-refresh"/></svg></button>
+            <button class="button button-primary" id="focus-start-button" type="button">
+              <svg class="icon"><use href="#icon-play" /></svg><span>Start session</span>
+            </button>
+            <button
+              class="icon-button focus-reset"
+              id="focus-reset-button"
+              type="button"
+              aria-label="Reset timer"
+            >
+              <svg class="icon"><use href="#icon-refresh" /></svg>
+            </button>
           </div>
         </section>
         <section class="focus-plan-panel">
@@ -473,17 +1026,35 @@
           <h3>A small, bounded plan</h3>
           <p>Based on deadline, remaining effort, and priority—not on health or ability.</p>
           <ol class="focus-plan-list" id="focus-plan-list"></ol>
-          <div class="focus-note"><svg class="icon"><use href="#icon-info"/></svg><span>The timer and sequence are optional planning aids. They are not saved or scored.</span></div>
+          <div class="focus-note">
+            <svg class="icon"><use href="#icon-info" /></svg
+            ><span
+              >The timer and sequence are optional planning aids. They are not saved or
+              scored.</span
+            >
+          </div>
         </section>
       </div>
     </dialog>
 
     <nav class="mobile-dock" aria-label="Mobile quick navigation">
-      <a href="#overview"><svg class="icon"><use href="#icon-trend"/></svg><span>Overview</span></a>
-      <a href="#week-explorer"><svg class="icon"><use href="#icon-calendar"/></svg><span>Week</span></a>
-      <button id="mobile-add-button" type="button"><span class="mobile-add-icon"><svg class="icon"><use href="#icon-plus"/></svg></span><span>Add</span></button>
-      <a href="#planner"><svg class="icon"><use href="#icon-book"/></svg><span>Planner</span></a>
-      <button id="mobile-focus-button" type="button"><svg class="icon"><use href="#icon-bolt"/></svg><span>Focus</span></button>
+      <a href="#overview"
+        ><svg class="icon"><use href="#icon-trend" /></svg><span>Overview</span></a
+      >
+      <a href="#week-explorer"
+        ><svg class="icon"><use href="#icon-calendar" /></svg><span>Week</span></a
+      >
+      <button id="mobile-add-button" type="button">
+        <span class="mobile-add-icon"
+          ><svg class="icon"><use href="#icon-plus" /></svg></span
+        ><span>Add</span>
+      </button>
+      <a href="#planner"
+        ><svg class="icon"><use href="#icon-book" /></svg><span>Planner</span></a
+      >
+      <button id="mobile-focus-button" type="button">
+        <svg class="icon"><use href="#icon-bolt" /></svg><span>Focus</span>
+      </button>
     </nav>
 
     <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
