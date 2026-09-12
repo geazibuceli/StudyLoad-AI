@@ -17,7 +17,7 @@ const MIME_TYPES = new Map([
   [".js", "text/javascript; charset=utf-8"],
   [".json", "application/json; charset=utf-8"],
   [".svg", "image/svg+xml; charset=utf-8"],
-  [".txt", "text/plain; charset=utf-8"]
+  [".txt", "text/plain; charset=utf-8"],
 ]);
 
 const SECURITY_HEADERS = {
@@ -31,12 +31,12 @@ const SECURITY_HEADERS = {
     "img-src 'self' data:",
     "object-src 'none'",
     "script-src 'self'",
-    "style-src 'self'"
+    "style-src 'self'",
   ].join("; "),
   "Cross-Origin-Opener-Policy": "same-origin",
   "Referrer-Policy": "no-referrer",
   "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY"
+  "X-Frame-Options": "DENY",
 };
 
 function writeResponse(response, statusCode, body, headers = {}) {
@@ -47,7 +47,7 @@ function writeResponse(response, statusCode, body, headers = {}) {
 function writeJson(response, statusCode, value) {
   writeResponse(response, statusCode, JSON.stringify(value), {
     "Cache-Control": "no-store",
-    "Content-Type": "application/json; charset=utf-8"
+    "Content-Type": "application/json; charset=utf-8",
   });
 }
 
@@ -126,7 +126,8 @@ async function serveStatic(response, pathname, publicDirectory, method) {
     writeResponse(response, 200, content, {
       "Cache-Control": requestedPath === "index.html" ? "no-cache" : "public, max-age=3600",
       "Content-Length": method === "HEAD" ? fileStat.size : Buffer.byteLength(content),
-      "Content-Type": MIME_TYPES.get(extname(absolutePath).toLowerCase()) ?? "application/octet-stream"
+      "Content-Type":
+        MIME_TYPES.get(extname(absolutePath).toLowerCase()) ?? "application/octet-stream",
     });
   } catch {
     writeJson(response, 404, { error: "Resource not found." });
@@ -142,7 +143,7 @@ async function handleRequest(request, response, options) {
       status: "ok",
       service: "study-balance-ai",
       version: "1.0.0",
-      diagnostic: false
+      diagnostic: false,
     });
     return;
   }
@@ -181,21 +182,22 @@ async function handleRequest(request, response, options) {
 
 export function createAppServer(options = {}) {
   const serverOptions = {
-    publicDirectory: options.publicDirectory ?? DEFAULT_PUBLIC_DIRECTORY
+    publicDirectory: options.publicDirectory ?? DEFAULT_PUBLIC_DIRECTORY,
   };
 
   return createServer((request, response) => {
     handleRequest(request, response, serverOptions).catch((error) => {
-      const domainValidationError = error instanceof TypeError
-        || error instanceof RangeError
-        || error instanceof URIError;
+      const domainValidationError =
+        error instanceof TypeError || error instanceof RangeError || error instanceof URIError;
       const statusCode = Number.isInteger(error.statusCode)
         ? error.statusCode
-        : domainValidationError ? 400 : 500;
+        : domainValidationError
+          ? 400
+          : 500;
       if (statusCode >= 500) console.error(error);
       if (!response.headersSent) {
         writeJson(response, statusCode, {
-          error: statusCode >= 500 ? "The analysis could not be completed." : error.message
+          error: statusCode >= 500 ? "The analysis could not be completed." : error.message,
         });
       } else {
         response.end();
@@ -204,7 +206,8 @@ export function createAppServer(options = {}) {
   });
 }
 
-const isMainModule = process.argv[1] && normalize(process.argv[1]) === normalize(fileURLToPath(import.meta.url));
+const isMainModule =
+  process.argv[1] && normalize(process.argv[1]) === normalize(fileURLToPath(import.meta.url));
 
 if (isMainModule) {
   const port = Number(process.env.PORT ?? 3000);
