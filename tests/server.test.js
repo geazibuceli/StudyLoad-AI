@@ -28,7 +28,7 @@ async function postJson(path, body) {
   return fetch(`${baseUrl}${path}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   });
 }
 
@@ -64,8 +64,8 @@ describe("application server", () => {
       ...overloaded,
       adjustments: {
         weeklyAvailableHours: 24,
-        taskUpdates: [{ id: overloaded.tasks[0].id, progress: 75 }]
-      }
+        taskUpdates: [{ id: overloaded.tasks[0].id, progress: 75 }],
+      },
     });
     const simulation = await simulationResponse.json();
     assert.equal(simulationResponse.status, 200);
@@ -78,7 +78,7 @@ describe("application server", () => {
     const invalidJsonResponse = await fetch(`${baseUrl}/api/analyze`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: "{invalid"
+      body: "{invalid",
     });
     const invalidJson = await invalidJsonResponse.json();
     assert.equal(invalidJsonResponse.status, 400);
@@ -89,16 +89,18 @@ describe("application server", () => {
     const invalidScheduleResponse = await postJson("/api/analyze", {
       tasks: [],
       weeklyAvailableHours: 0,
-      referenceDate: "2026-03-02"
+      referenceDate: "2026-03-02",
     });
     assert.equal(invalidScheduleResponse.status, 400);
 
     const invalidTaskResponse = await postJson("/api/analyze", {
       ...createLightSchedule(),
-      tasks: [{
-        ...createLightSchedule().tasks[0],
-        progress: 101
-      }]
+      tasks: [
+        {
+          ...createLightSchedule().tasks[0],
+          progress: 101,
+        },
+      ],
     });
     const invalidTask = await invalidTaskResponse.json();
     assert.equal(invalidTaskResponse.status, 400);
@@ -107,7 +109,7 @@ describe("application server", () => {
     const unsupportedTypeResponse = await fetch(`${baseUrl}/api/analyze`, {
       method: "POST",
       headers: { "content-type": "text/plain" },
-      body: "{}"
+      body: "{}",
     });
     const unsupportedType = await unsupportedTypeResponse.json();
     assert.equal(unsupportedTypeResponse.status, 415);
