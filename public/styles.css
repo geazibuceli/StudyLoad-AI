@@ -240,14 +240,47 @@ svg {
   align-items: center;
   gap: 7px;
   padding: 7px 2px;
+  border-radius: 8px;
   background: transparent;
+  color: var(--ink-soft);
   cursor: pointer;
   font-size: 0.83rem;
   font-weight: 700;
+  transition:
+    background 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.text-button:hover {
+  background: #f1f4f3;
+  color: var(--ink);
 }
 
 .text-button.danger {
   color: var(--danger);
+}
+
+#clear-filters-button {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #f2f5f4;
+  color: var(--ink-soft);
+}
+
+#clear-filters-button:hover {
+  background: #e8efee;
+  color: var(--ink);
+}
+
+#clear-data-button {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgb(218 83 83 / 6%);
+}
+
+#clear-data-button:hover {
+  background: rgb(218 83 83 / 11%);
 }
 
 .site-header {
@@ -1730,6 +1763,18 @@ progress::-moz-progress-bar {
   font-size: 0.76rem;
 }
 
+.task-empty-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.task-empty-actions .button {
+  min-width: 172px;
+  justify-content: center;
+}
+
 .methodology-section {
   padding: 82px 0 75px;
   background: #eef2f0;
@@ -2921,6 +2966,7 @@ kbd {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .planner-search {
@@ -2935,6 +2981,29 @@ kbd {
   border-radius: 10px;
   background: #fbfcfb;
   color: #87939c;
+}
+
+.task-search-clear {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: #edf1f0;
+  color: #687785;
+  cursor: pointer;
+  padding: 0;
+}
+
+.task-search-clear:hover {
+  background: #e1e8e6;
+  color: var(--ink);
+}
+
+.task-search-clear .icon {
+  width: 12px;
+  height: 12px;
 }
 
 .planner-search:focus-within {
@@ -3008,6 +3077,7 @@ kbd {
   margin-left: auto;
   color: #7c8992;
   font-size: 0.65rem;
+  letter-spacing: 0.03em;
 }
 
 .inline-progress {

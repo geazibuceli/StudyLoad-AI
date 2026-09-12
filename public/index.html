@@ -563,7 +563,14 @@
                   type="search"
                   placeholder="Search tasks or courses"
                   aria-label="Search tasks or courses"
-                /><kbd>/</kbd></label
+                /><button
+                  class="task-search-clear hidden"
+                  id="task-search-clear"
+                  type="button"
+                  aria-label="Clear search"
+                >
+                  <svg class="icon"><use href="#icon-close" /></svg>
+                </button><kbd>/</kbd></label
               >
               <label class="sort-control"
                 ><svg class="icon"><use href="#icon-sliders" /></svg
@@ -600,6 +607,9 @@
                 id="planner-result-count"
                 aria-live="polite"
               ></span>
+              <button class="text-button" id="clear-filters-button" type="button">
+                <svg class="icon"><use href="#icon-refresh" /></svg> Clear filters
+              </button>
               <button class="text-button danger" id="clear-data-button" type="button">
                 <svg class="icon"><use href="#icon-trash" /></svg> Clear local data
               </button>
@@ -613,9 +623,17 @@
             ></span>
             <h3>Your planner is ready</h3>
             <p>Add a deadline, exam, or study task to build your first workload forecast.</p>
-            <button class="button button-primary" id="empty-add-button" type="button">
-              <svg class="icon"><use href="#icon-plus" /></svg> Add your first task
-            </button>
+            <div class="task-empty-actions">
+              <button class="button button-primary" id="empty-add-button" type="button">
+                <svg class="icon"><use href="#icon-plus" /></svg> Add your first task
+              </button>
+              <button class="button button-secondary" id="empty-clear-button" type="button">
+                <svg class="icon"><use href="#icon-refresh" /></svg> Clear filters
+              </button>
+              <button class="button button-secondary" id="empty-demo-button" type="button">
+                <svg class="icon"><use href="#icon-spark" /></svg> Load sample data
+              </button>
+            </div>
           </div>
         </div>
       </section>

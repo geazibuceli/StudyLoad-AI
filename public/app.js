@@ -36,6 +36,7 @@ const elements = {
   capacityInput: document.querySelector("#capacity-input"),
   chartCapacityLabel: document.querySelector("#chart-capacity-label"),
   clearDataButton: document.querySelector("#clear-data-button"),
+  clearFiltersButton: document.querySelector("#clear-filters-button"),
   closeTaskDialog: document.querySelector("#close-task-dialog"),
   commandButton: document.querySelector("#command-button"),
   commandDialog: document.querySelector("#command-dialog"),
@@ -43,6 +44,8 @@ const elements = {
   commandSearch: document.querySelector("#command-search"),
   dataBadge: document.querySelector("#data-badge"),
   emptyAddButton: document.querySelector("#empty-add-button"),
+  emptyClearButton: document.querySelector("#empty-clear-button"),
+  emptyDemoButton: document.querySelector("#empty-demo-button"),
   exportButton: document.querySelector("#export-button"),
   factorList: document.querySelector("#factor-list"),
   filterCountAll: document.querySelector("#filter-count-all"),
@@ -125,6 +128,7 @@ const elements = {
   taskTitle: document.querySelector("#task-title"),
   taskType: document.querySelector("#task-type"),
   taskSearch: document.querySelector("#task-search"),
+  taskSearchClear: document.querySelector("#task-search-clear"),
   taskSort: document.querySelector("#task-sort"),
   toastRegion: document.querySelector("#toast-region"),
   weekDayGrid: document.querySelector("#week-day-grid"),
@@ -869,19 +873,74 @@ function renderTasks() {
     (task) => task.priority === "high",
   ).length;
   elements.filterCountAll.textContent = state.tasks.length;
-  elements.plannerResultCount.textContent = `${tasks.length} ${tasks.length === 1 ? "result" : "results"}`;
+
+  const summaryParts = [];
+  if (state.search.trim()) summaryParts.push(`search: “${state.search.trim()}”`);
+  if (state.filter === "week") summaryParts.push("due this week");
+  else if (state.filter === "high") summaryParts.push("high priority");
+  else if (state.filter === "all") summaryParts.push("all tasks");
+
+  elements.plannerResultCount.textContent = summaryParts.length
+    ? `${tasks.length} ${tasks.length === 1 ? "result" : "results"} · ${summaryParts.join(" · ")}`
+    : `${tasks.length} ${tasks.length === 1 ? "result" : "results"}`;
+
   elements.taskEmpty.classList.toggle("hidden", tasks.length > 0);
   elements.taskList.classList.toggle("hidden", tasks.length === 0);
+  elements.taskSearchClear.classList.toggle("hidden", !state.search.trim());
+  elements.clearFiltersButton.innerHTML = state.search.trim()
+    ? `${icon("refresh")} <span>Clear search</span>`
+    : state.filter === "all"
+      ? `${icon("refresh")} <span>Show open tasks</span>`
+      : `${icon("refresh")} <span>Clear filters</span>`;
+  elements.clearFiltersButton.classList.toggle(
+    "hidden",
+    !(state.search.trim() || state.filter !== "open"),
+  );
   elements.exportButton.disabled = state.tasks.length === 0;
   if (tasks.length === 0) {
     const hasPlannerTasks = state.tasks.length > 0;
-    elements.taskEmpty.querySelector("h3").textContent = hasPlannerTasks
-      ? "No tasks match this view"
-      : "Your planner is ready";
-    elements.taskEmpty.querySelector("p").textContent = hasPlannerTasks
-      ? "Try another filter or clear the search to see more tasks."
-      : "Add a deadline, exam, or study task to build your first workload forecast.";
-    elements.emptyAddButton.classList.toggle("hidden", hasPlannerTasks);
+    const allTasksCompleted = hasPlannerTasks && state.tasks.every((task) => task.progress >= 100);
+    const hasActiveFilters = Boolean(state.search.trim()) || state.filter !== "open";
+    const query = state.search.trim();
+
+    elements.emptyClearButton.innerHTML = allTasksCompleted
+      ? `${icon("eye")} <span>Show all tasks</span>`
+      : query
+        ? `${icon("refresh")} <span>Clear search</span>`
+        : `${icon("refresh")} <span>Clear filters</span>`;
+
+    elements.taskEmpty.querySelector("h3").textContent = !hasPlannerTasks
+      ? "Your planner is ready"
+      : allTasksCompleted
+        ? "Everything is completed"
+        : query
+          ? "No tasks match your search"
+          : state.filter === "week"
+            ? "No tasks are due this week"
+            : state.filter === "high"
+              ? "No open high-priority tasks"
+              : "No tasks match this view";
+
+    elements.taskEmpty.querySelector("p").textContent = !hasPlannerTasks
+      ? "Add a deadline, exam, or study task to build your first workload forecast."
+      : allTasksCompleted
+        ? "Add a new task or reopen one to keep planning the week."
+        : query
+          ? `No task title, subject, or type includes “${query}”.`
+          : state.filter === "week"
+            ? "Try another filter or add a task with a deadline in the next 7 days."
+            : state.filter === "high"
+              ? "Try another filter or mark a task as open with high priority."
+              : hasActiveFilters
+                ? "Try another filter or clear the search to see more tasks."
+                : "Add a new task or load sample data to continue planning.";
+
+    elements.emptyAddButton.innerHTML = !hasPlannerTasks
+      ? `${icon("plus")} <span>Add your first task</span>`
+      : `${icon("plus")} <span>Add another task</span>`;
+    elements.emptyAddButton.classList.toggle("hidden", !( !hasPlannerTasks || allTasksCompleted ));
+    elements.emptyClearButton.classList.toggle("hidden", !hasPlannerTasks);
+    elements.emptyDemoButton.classList.toggle("hidden", !( !hasPlannerTasks || allTasksCompleted ));
   }
 
   for (const task of tasks) {
@@ -1320,8 +1379,10 @@ async function clearLocalData() {
   state.tasks = [];
   state.weeklyAvailableHours = 18;
   state.demoMode = false;
+  state.filter = "open";
   state.search = "";
   elements.taskSearch.value = "";
+  updateFilterButtons();
   resetScenario();
   renderLocalState();
   await analyzeSchedule();
@@ -1600,6 +1661,28 @@ function setupRevealAnimations() {
 function bindEvents() {
   elements.addTaskButton.addEventListener("click", () => openTaskDialog());
   elements.emptyAddButton.addEventListener("click", () => openTaskDialog());
+  elements.emptyClearButton.addEventListener("click", () => {
+    const allTasksCompleted = state.tasks.length > 0 && state.tasks.every((task) => task.progress >= 100);
+    const query = state.search.trim();
+
+    if (query) {
+      state.search = "";
+      elements.taskSearch.value = "";
+    } else if (allTasksCompleted) {
+      state.filter = "all";
+      state.search = "";
+      elements.taskSearch.value = "";
+    } else {
+      state.filter = "open";
+      state.search = "";
+      elements.taskSearch.value = "";
+    }
+
+    saveLocalState();
+    updateFilterButtons();
+    renderTasks();
+  });
+  elements.emptyDemoButton.addEventListener("click", () => loadDemo());
   elements.mobileAddButton.addEventListener("click", () => openTaskDialog());
   elements.cancelTaskButton.addEventListener("click", () => elements.taskDialog.close());
   elements.closeTaskDialog.addEventListener("click", () => elements.taskDialog.close());
@@ -1639,6 +1722,14 @@ function bindEvents() {
   elements.applySimulationButton.addEventListener("click", applySimulation);
   elements.exportButton.addEventListener("click", exportCsv);
   elements.clearDataButton.addEventListener("click", clearLocalData);
+  elements.clearFiltersButton.addEventListener("click", () => {
+    state.filter = "open";
+    state.search = "";
+    elements.taskSearch.value = "";
+    saveLocalState();
+    updateFilterButtons();
+    renderTasks();
+  });
   elements.privacyButton.addEventListener("click", showPrivacyDialog);
   elements.footerPrivacyButton.addEventListener("click", showPrivacyDialog);
   elements.riskInfoButton.addEventListener("click", showScoreDialog);
@@ -1671,6 +1762,32 @@ function bindEvents() {
     state.search = elements.taskSearch.value;
     saveLocalState();
     renderTasks();
+  });
+  elements.taskSearchClear.addEventListener("click", () => {
+    state.search = "";
+    elements.taskSearch.value = "";
+    saveLocalState();
+    renderTasks();
+    elements.taskSearch.focus({ preventScroll: true });
+  });
+  elements.taskSearch.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+
+    if (elements.taskSearch.value.trim()) {
+      state.search = "";
+      elements.taskSearch.value = "";
+      saveLocalState();
+      renderTasks();
+      return;
+    }
+
+    if (state.filter !== "open") {
+      state.filter = "open";
+      saveLocalState();
+      updateFilterButtons();
+      renderTasks();
+    }
   });
   elements.taskSort.addEventListener("change", () => {
     state.sort = elements.taskSort.value;

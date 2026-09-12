@@ -53,6 +53,18 @@ describe("application server", () => {
     assert.match(response.headers.get("x-request-id") ?? "", /.+/);
   });
 
+  test("serves the planner UX controls needed for empty-state recovery", async () => {
+    const response = await fetch(`${baseUrl}/`);
+    const body = await response.text();
+
+    assert.equal(response.status, 200);
+    assert.match(body, /id="task-search"/);
+    assert.match(body, /id="task-empty"/);
+    assert.match(body, /id="clear-filters-button"/);
+    assert.match(body, /id="clear-data-button"/);
+    assert.match(body, /id="empty-clear-button"/);
+  });
+
   test("analyzes and simulates valid schedules through the API", async () => {
     const analysisResponse = await postJson("/api/analyze", createLightSchedule());
     const analysis = await analysisResponse.json();
