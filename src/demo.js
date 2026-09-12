@@ -32,7 +32,7 @@ export function createDemoSchedule(referenceDate = todayISO()) {
         estimatedHours: 12,
         progress: 30,
         priority: "high",
-        flexible: true
+        flexible: true,
       },
       {
         id: "demo-algorithms-exam",
@@ -43,7 +43,7 @@ export function createDemoSchedule(referenceDate = todayISO()) {
         estimatedHours: 8,
         progress: 10,
         priority: "high",
-        flexible: false
+        flexible: false,
       },
       {
         id: "demo-statistics-assignment",
@@ -54,7 +54,7 @@ export function createDemoSchedule(referenceDate = todayISO()) {
         estimatedHours: 4,
         progress: 45,
         priority: "medium",
-        flexible: true
+        flexible: true,
       },
       {
         id: "demo-hci-presentation",
@@ -65,7 +65,7 @@ export function createDemoSchedule(referenceDate = todayISO()) {
         estimatedHours: 6,
         progress: 20,
         priority: "medium",
-        flexible: true
+        flexible: true,
       },
       {
         id: "demo-database-reading",
@@ -76,7 +76,7 @@ export function createDemoSchedule(referenceDate = todayISO()) {
         estimatedHours: 3,
         progress: 0,
         priority: "low",
-        flexible: true
+        flexible: true,
       },
       {
         id: "demo-networks-report",
@@ -87,8 +87,8 @@ export function createDemoSchedule(referenceDate = todayISO()) {
         estimatedHours: 5,
         progress: 15,
         priority: "medium",
-        flexible: true
-      }
-    ]
+        flexible: true,
+      },
+    ],
   };
 }
