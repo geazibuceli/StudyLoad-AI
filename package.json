@@ -10,7 +10,10 @@
     "test": "node --test --experimental-test-isolation=none",
     "train": "node scripts/train-model.js",
     "model:check": "node scripts/train-model.js --check",
-    "check": "node --check src/server.js && node --check public/app.js && node scripts/check-domain.js && node scripts/train-model.js --check && node --test --experimental-test-isolation=none"
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && node --check src/server.js && node --check public/app.js && node scripts/check-domain.js && node scripts/train-model.js --check && node --test --experimental-test-isolation=none"
   },
   "engines": {
     "node": ">=22"
@@ -25,5 +28,11 @@
     "sdg-4"
   ],
   "author": "Geazi Junior Buceli da Silva",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "eslint": "^9.15.0",
+    "globals": "^15.12.0",
+    "prettier": "^3.4.2"
+  }
 }
