@@ -1,12 +1,6 @@
 import { currentUtcDate, formatDate, parseDate } from "./date.js";
 
-export const TASK_TYPES = Object.freeze([
-  "assignment",
-  "exam",
-  "reading",
-  "project",
-  "other",
-]);
+export const TASK_TYPES = Object.freeze(["assignment", "exam", "reading", "project", "other"]);
 
 export const PRIORITY_LEVELS = Object.freeze(["low", "medium", "high"]);
 
@@ -41,21 +35,14 @@ export function normalizeTask(task, index = 0) {
   const subject = requiredText(task.subject, `${fieldPrefix}.subject`);
 
   if (!TASK_TYPES.includes(task.type)) {
-    throw new RangeError(
-      `${fieldPrefix}.type must be one of: ${TASK_TYPES.join(", ")}.`,
-    );
+    throw new RangeError(`${fieldPrefix}.type must be one of: ${TASK_TYPES.join(", ")}.`);
   }
 
   if (!PRIORITY_LEVELS.includes(task.priority)) {
-    throw new RangeError(
-      `${fieldPrefix}.priority must be one of: ${PRIORITY_LEVELS.join(", ")}.`,
-    );
+    throw new RangeError(`${fieldPrefix}.priority must be one of: ${PRIORITY_LEVELS.join(", ")}.`);
   }
 
-  const estimatedHours = finiteNumber(
-    task.estimatedHours,
-    `${fieldPrefix}.estimatedHours`,
-  );
+  const estimatedHours = finiteNumber(task.estimatedHours, `${fieldPrefix}.estimatedHours`);
   if (estimatedHours < 0) {
     throw new RangeError(`${fieldPrefix}.estimatedHours cannot be negative.`);
   }
@@ -93,7 +80,7 @@ export function normalizeScheduleInput(payload) {
   const ids = new Set();
   for (const task of tasks) {
     if (ids.has(task.id)) {
-      throw new RangeError(`Task id \"${task.id}\" is duplicated.`);
+      throw new RangeError(`Task id "${task.id}" is duplicated.`);
     }
     ids.add(task.id);
   }
@@ -103,14 +90,13 @@ export function normalizeScheduleInput(payload) {
     "payload.weeklyAvailableHours",
   );
   if (weeklyAvailableHours <= 0 || weeklyAvailableHours > 168) {
-    throw new RangeError(
-      "payload.weeklyAvailableHours must be greater than 0 and at most 168.",
-    );
+    throw new RangeError("payload.weeklyAvailableHours must be greater than 0 and at most 168.");
   }
 
-  const referenceDate = payload.referenceDate === undefined
-    ? currentUtcDate()
-    : parseDate(payload.referenceDate, "payload.referenceDate");
+  const referenceDate =
+    payload.referenceDate === undefined
+      ? currentUtcDate()
+      : parseDate(payload.referenceDate, "payload.referenceDate");
 
   return Object.freeze({
     tasks: Object.freeze(tasks),
@@ -139,12 +125,9 @@ export function normalizeSimulationAdjustments(adjustments, tasks) {
   const taskIds = new Set(tasks.map((task) => task.id));
   const normalizedUpdates = taskUpdates.map((update, index) => {
     assertPlainObject(update, `payload.adjustments.taskUpdates[${index}]`);
-    const id = requiredText(
-      update.id,
-      `payload.adjustments.taskUpdates[${index}].id`,
-    );
+    const id = requiredText(update.id, `payload.adjustments.taskUpdates[${index}].id`);
     if (!taskIds.has(id)) {
-      throw new RangeError(`Cannot update unknown task id \"${id}\".`);
+      throw new RangeError(`Cannot update unknown task id "${id}".`);
     }
 
     const original = tasks.find((task) => task.id === id);
@@ -152,12 +135,9 @@ export function normalizeSimulationAdjustments(adjustments, tasks) {
   });
 
   const normalizedRemoveIds = removeTaskIds.map((id, index) => {
-    const normalizedId = requiredText(
-      id,
-      `payload.adjustments.removeTaskIds[${index}]`,
-    );
+    const normalizedId = requiredText(id, `payload.adjustments.removeTaskIds[${index}]`);
     if (!taskIds.has(normalizedId)) {
-      throw new RangeError(`Cannot remove unknown task id \"${normalizedId}\".`);
+      throw new RangeError(`Cannot remove unknown task id "${normalizedId}".`);
     }
     return normalizedId;
   });
@@ -165,7 +145,7 @@ export function normalizeSimulationAdjustments(adjustments, tasks) {
   const duplicateUpdateIds = new Set();
   for (const update of normalizedUpdates) {
     if (duplicateUpdateIds.has(update.id)) {
-      throw new RangeError(`Task id \"${update.id}\" has multiple updates.`);
+      throw new RangeError(`Task id "${update.id}" has multiple updates.`);
     }
     duplicateUpdateIds.add(update.id);
   }
@@ -174,7 +154,7 @@ export function normalizeSimulationAdjustments(adjustments, tasks) {
   for (const update of normalizedUpdates) {
     if (removed.has(update.id)) {
       throw new RangeError(
-        `Task id \"${update.id}\" cannot be updated and removed in one simulation.`,
+        `Task id "${update.id}" cannot be updated and removed in one simulation.`,
       );
     }
   }
