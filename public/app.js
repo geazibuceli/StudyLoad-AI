@@ -938,9 +938,9 @@ function renderTasks() {
     elements.emptyAddButton.innerHTML = !hasPlannerTasks
       ? `${icon("plus")} <span>Add your first task</span>`
       : `${icon("plus")} <span>Add another task</span>`;
-    elements.emptyAddButton.classList.toggle("hidden", !( !hasPlannerTasks || allTasksCompleted ));
+    elements.emptyAddButton.classList.toggle("hidden", !(!hasPlannerTasks || allTasksCompleted));
     elements.emptyClearButton.classList.toggle("hidden", !hasPlannerTasks);
-    elements.emptyDemoButton.classList.toggle("hidden", !( !hasPlannerTasks || allTasksCompleted ));
+    elements.emptyDemoButton.classList.toggle("hidden", !(!hasPlannerTasks || allTasksCompleted));
   }
 
   for (const task of tasks) {
@@ -1662,7 +1662,8 @@ function bindEvents() {
   elements.addTaskButton.addEventListener("click", () => openTaskDialog());
   elements.emptyAddButton.addEventListener("click", () => openTaskDialog());
   elements.emptyClearButton.addEventListener("click", () => {
-    const allTasksCompleted = state.tasks.length > 0 && state.tasks.every((task) => task.progress >= 100);
+    const allTasksCompleted =
+      state.tasks.length > 0 && state.tasks.every((task) => task.progress >= 100);
     const query = state.search.trim();
 
     if (query) {
