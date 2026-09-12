@@ -10,19 +10,19 @@ This document describes the MVP's intended behavior. It is not a legal certifica
 
 The application needs only data that support academic planning:
 
-| Data category | Example | Purpose | Default location |
-|---|---|---|---|
-| Task identifiers | Locally generated task ID | Update and remove the correct task | Browser `localStorage` |
-| Task and course description | Short title and course entered by the user | Make the planner understandable | Browser `localStorage`; retained in-browser by the bundled client |
-| Schedule details | Due date, type, priority, completion state | Build the seven-day workload view | Browser `localStorage`; request memory during analysis |
-| Effort estimate | Expected study hours | Compare planned demand with availability | Browser `localStorage`; request memory during analysis |
-| Weekly availability | Hours the user chooses to allocate | Contextualize workload | Browser `localStorage`; request memory during analysis |
-| Planner view preferences | Search text, sort order, filter selection | Restore the user's planner view | Browser `localStorage` |
-| Reference date | Explicit analysis date | Make time windows reproducible | Request memory |
-| Derived output | Probabilities, factors, suggestions | Present planning support | Browser memory unless explicitly persisted |
-| Scenario draft | Temporary capacity or flexible-deadline change | Compare with the saved baseline | Browser and request memory until reset or apply |
-| Focus state | Bounded next-step sequence and timer | Optional local planning aid | Ephemeral browser memory |
-| Synthetic feature vectors | Artificial workload-feature combinations | Train and test the model | Development process and versioned artifact |
+| Data category               | Example                                        | Purpose                                  | Default location                                                  |
+| --------------------------- | ---------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
+| Task identifiers            | Locally generated task ID                      | Update and remove the correct task       | Browser `localStorage`                                            |
+| Task and course description | Short title and course entered by the user     | Make the planner understandable          | Browser `localStorage`; retained in-browser by the bundled client |
+| Schedule details            | Due date, type, priority, completion state     | Build the seven-day workload view        | Browser `localStorage`; request memory during analysis            |
+| Effort estimate             | Expected study hours                           | Compare planned demand with availability | Browser `localStorage`; request memory during analysis            |
+| Weekly availability         | Hours the user chooses to allocate             | Contextualize workload                   | Browser `localStorage`; request memory during analysis            |
+| Planner view preferences    | Search text, sort order, filter selection      | Restore the user's planner view          | Browser `localStorage`                                            |
+| Reference date              | Explicit analysis date                         | Make time windows reproducible           | Request memory                                                    |
+| Derived output              | Probabilities, factors, suggestions            | Present planning support                 | Browser memory unless explicitly persisted                        |
+| Scenario draft              | Temporary capacity or flexible-deadline change | Compare with the saved baseline          | Browser and request memory until reset or apply                   |
+| Focus state                 | Bounded next-step sequence and timer           | Optional local planning aid              | Ephemeral browser memory                                          |
+| Synthetic feature vectors   | Artificial workload-feature combinations       | Train and test the model                 | Development process and versioned artifact                        |
 
 The MVP does not need names, personal email addresses, student numbers, precise location, contact lists, health records, biometric data, private messages, grades, financial data, protected demographic attributes, or institutional disciplinary information.
 
@@ -93,16 +93,16 @@ Any study involving people requires a separate informed-consent process that sta
 
 ## 7. Ethical risks and safeguards
 
-| Risk | Why it matters | MVP safeguard | Further work required |
-|---|---|---|---|
-| Clinical misinterpretation | A workload label may be mistaken for a health assessment | Persistent non-diagnostic language and schedule-focused labels | Comprehension testing with representative users |
-| False reassurance | A `low` result may hide unrecorded constraints or distress | Visible limitations and no wellness claim | Human-centered validation and escalation guidance |
-| Unnecessary alarm | A `high` result may increase pressure | Neutral wording, uncertainty, and optional actions | Measure alert fatigue and emotional impact |
-| Automation bias | Probabilities may appear more authoritative than they are | Factors, counterfactual framing, and user control | Evaluate understanding and calibration display |
-| Distribution bias | Synthetic feature vectors cannot represent all programs or circumstances | No demographic or institutional claims | Diverse real-world validation with subgroup analysis |
-| Accessibility exclusion | Planning interfaces can create barriers | Standards-based controls, keyboard paths, mobile actions, and reduced-motion support | Keyboard, screen-reader, contrast, motion, and cognitive testing |
-| Privacy exposure | Academic schedules and planner searches can reveal routines or concerns | Local-first storage and neutral text placeholders in bundled-client API requests | Threat modeling and deployment-specific controls |
-| Recommendation burden | Advice may imply that every deadline can be moved | Suggestions remain optional and describe assumptions | Co-design with students and support staff |
+| Risk                       | Why it matters                                                           | MVP safeguard                                                                        | Further work required                                            |
+| -------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| Clinical misinterpretation | A workload label may be mistaken for a health assessment                 | Persistent non-diagnostic language and schedule-focused labels                       | Comprehension testing with representative users                  |
+| False reassurance          | A `low` result may hide unrecorded constraints or distress               | Visible limitations and no wellness claim                                            | Human-centered validation and escalation guidance                |
+| Unnecessary alarm          | A `high` result may increase pressure                                    | Neutral wording, uncertainty, and optional actions                                   | Measure alert fatigue and emotional impact                       |
+| Automation bias            | Probabilities may appear more authoritative than they are                | Factors, counterfactual framing, and user control                                    | Evaluate understanding and calibration display                   |
+| Distribution bias          | Synthetic feature vectors cannot represent all programs or circumstances | No demographic or institutional claims                                               | Diverse real-world validation with subgroup analysis             |
+| Accessibility exclusion    | Planning interfaces can create barriers                                  | Standards-based controls, keyboard paths, mobile actions, and reduced-motion support | Keyboard, screen-reader, contrast, motion, and cognitive testing |
+| Privacy exposure           | Academic schedules and planner searches can reveal routines or concerns  | Local-first storage and neutral text placeholders in bundled-client API requests     | Threat modeling and deployment-specific controls                 |
+| Recommendation burden      | Advice may imply that every deadline can be moved                        | Suggestions remain optional and describe assumptions                                 | Co-design with students and support staff                        |
 
 The bundled interface suppresses global single-key shortcuts while the user is editing a field and disables nonessential reveal motion when `prefers-reduced-motion: reduce` is active. These safeguards reduce specific barriers but do not establish accessibility compliance.
 
