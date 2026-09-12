@@ -39,12 +39,15 @@ describe("interactive planner domain contracts", () => {
     assert.equal(result.features.completedTaskCount, 0);
     assert.equal(result.features.remainingHours, 0);
     assert.equal(result.features.loadRatio, 0);
-    assert.deepEqual(result.dailyLoad.map((day) => day.date), LEAP_WEEK_DATES);
-    assert.ok(result.dailyLoad.every((day) => (
-      day.plannedHours === 0
-      && day.taskCount === 0
-      && day.taskIds.length === 0
-    )));
+    assert.deepEqual(
+      result.dailyLoad.map((day) => day.date),
+      LEAP_WEEK_DATES,
+    );
+    assert.ok(
+      result.dailyLoad.every(
+        (day) => day.plannedHours === 0 && day.taskCount === 0 && day.taskIds.length === 0,
+      ),
+    );
     assert.equal(result.metadata.referenceDate, "2028-02-27");
     assert.equal(result.recommendations[0].id, "maintain-sustainable-plan");
   });
@@ -56,7 +59,10 @@ describe("interactive planner domain contracts", () => {
 
     const result = analyzeSchedule(schedule);
 
-    assert.deepEqual(result.dailyLoad.map((day) => day.date), LEAP_WEEK_DATES);
+    assert.deepEqual(
+      result.dailyLoad.map((day) => day.date),
+      LEAP_WEEK_DATES,
+    );
     assert.ok(result.dailyLoad.every((day) => day.taskIds.includes("light-reading")));
   });
 
@@ -77,10 +83,7 @@ describe("interactive planner domain contracts", () => {
     });
     assert.deepEqual(simulation.appliedAdjustments.taskUpdates, []);
     assert.deepEqual(simulation.appliedAdjustments.removeTaskIds, []);
-    assert.equal(
-      simulation.appliedAdjustments.weeklyAvailableHours,
-      schedule.weeklyAvailableHours,
-    );
+    assert.equal(simulation.appliedAdjustments.weeklyAvailableHours, schedule.weeklyAvailableHours);
   });
 
   test("applies partial edits, removals, and capacity changes without altering source state", () => {
@@ -102,10 +105,9 @@ describe("interactive planner domain contracts", () => {
     assert.equal(simulation.simulated.features.overdueTaskCount, 0);
     assert.equal(simulation.simulated.features.weeklyAvailableHours, 30);
     assert.ok(
-      simulation.simulated.dailyLoad.every((day) => (
-        !day.taskIds.includes("due-today")
-        && !day.taskIds.includes("overdue-assignment")
-      )),
+      simulation.simulated.dailyLoad.every(
+        (day) => !day.taskIds.includes("due-today") && !day.taskIds.includes("overdue-assignment"),
+      ),
     );
     assert.deepEqual(simulation.appliedAdjustments.removeTaskIds, ["overdue-assignment"]);
     assert.equal(simulation.appliedAdjustments.taskUpdates[0].id, "due-today");
@@ -186,7 +188,10 @@ describe("interactive planner API workflows", () => {
     assert.equal(analysisResponse.status, 200);
     assert.equal(analysis.metadata.referenceDate, demo.referenceDate);
     assert.equal(analysis.features.pendingTaskCount, demo.tasks.length);
-    assert.deepEqual(analysis.dailyLoad.map((day) => day.date), LEAP_WEEK_DATES);
+    assert.deepEqual(
+      analysis.dailyLoad.map((day) => day.date),
+      LEAP_WEEK_DATES,
+    );
   });
 
   test("isolates concurrent what-if responses used by interactive comparisons", async () => {
