@@ -1,10 +1,6 @@
-import {
-  existsSync,
-  readFileSync,
-  writeFileSync,
-} from "node:fs";
-import { resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { format } from "prettier";
 import {
   MODEL_FEATURE_NAMES,
   MODEL_SCHEMA_VERSION,
@@ -28,10 +24,7 @@ function shuffle(values, random) {
   const shuffled = [...values];
   for (let index = shuffled.length - 1; index > 0; index -= 1) {
     const replacementIndex = Math.floor(random() * (index + 1));
-    [shuffled[index], shuffled[replacementIndex]] = [
-      shuffled[replacementIndex],
-      shuffled[index],
-    ];
+    [shuffled[index], shuffled[replacementIndex]] = [shuffled[replacementIndex], shuffled[index]];
   }
   return shuffled;
 }
@@ -41,15 +34,16 @@ function vectorForRecord(record) {
 }
 
 function calculateScaler(vectors) {
-  const means = MODEL_FEATURE_NAMES.map((_, featureIndex) => (
-    vectors.reduce((total, vector) => total + vector[featureIndex], 0)
-      / vectors.length
-  ));
+  const means = MODEL_FEATURE_NAMES.map(
+    (_, featureIndex) =>
+      vectors.reduce((total, vector) => total + vector[featureIndex], 0) / vectors.length,
+  );
   const standardDeviations = MODEL_FEATURE_NAMES.map((_, featureIndex) => {
-    const variance = vectors.reduce((total, vector) => {
-      const difference = vector[featureIndex] - means[featureIndex];
-      return total + (difference * difference);
-    }, 0) / vectors.length;
+    const variance =
+      vectors.reduce((total, vector) => {
+        const difference = vector[featureIndex] - means[featureIndex];
+        return total + difference * difference;
+      }, 0) / vectors.length;
     return Math.max(Math.sqrt(variance), 1e-8);
   });
 
@@ -57,9 +51,9 @@ function calculateScaler(vectors) {
 }
 
 function standardize(vector, scaler) {
-  return vector.map((value, index) => (
-    (value - scaler.means[index]) / scaler.standardDeviations[index]
-  ));
+  return vector.map(
+    (value, index) => (value - scaler.means[index]) / scaler.standardDeviations[index],
+  );
 }
 
 function softmax(logits) {
@@ -72,28 +66,20 @@ function softmax(logits) {
 function trainSoftmax(samples) {
   const featureCount = MODEL_FEATURE_NAMES.length;
   const classCount = RISK_LEVELS.length;
-  const weights = Array.from(
-    { length: classCount },
-    () => Array(featureCount).fill(0),
-  );
+  const weights = Array.from({ length: classCount }, () => Array(featureCount).fill(0));
   const biases = Array(classCount).fill(0);
 
   for (let iteration = 0; iteration < TRAINING_ITERATIONS; iteration += 1) {
-    const weightGradients = Array.from(
-      { length: classCount },
-      () => Array(featureCount).fill(0),
-    );
+    const weightGradients = Array.from({ length: classCount }, () => Array(featureCount).fill(0));
     const biasGradients = Array(classCount).fill(0);
 
     for (const sample of samples) {
-      const logits = weights.map((classWeights, classIndex) => (
+      const logits = weights.map((classWeights, classIndex) =>
         classWeights.reduce(
-          (total, weight, featureIndex) => (
-            total + (weight * sample.vector[featureIndex])
-          ),
+          (total, weight, featureIndex) => total + weight * sample.vector[featureIndex],
           biases[classIndex],
-        )
-      ));
+        ),
+      );
       const probabilities = softmax(logits);
 
       for (let classIndex = 0; classIndex < classCount; classIndex += 1) {
@@ -102,23 +88,18 @@ function trainSoftmax(samples) {
         biasGradients[classIndex] += error;
 
         for (let featureIndex = 0; featureIndex < featureCount; featureIndex += 1) {
-          weightGradients[classIndex][featureIndex] += (
-            error * sample.vector[featureIndex]
-          );
+          weightGradients[classIndex][featureIndex] += error * sample.vector[featureIndex];
         }
       }
     }
 
     for (let classIndex = 0; classIndex < classCount; classIndex += 1) {
-      biases[classIndex] -= (
-        LEARNING_RATE * biasGradients[classIndex] / samples.length
-      );
+      biases[classIndex] -= (LEARNING_RATE * biasGradients[classIndex]) / samples.length;
 
       for (let featureIndex = 0; featureIndex < featureCount; featureIndex += 1) {
-        const regularizedGradient = (
-          (weightGradients[classIndex][featureIndex] / samples.length)
-          + (L2_REGULARIZATION * weights[classIndex][featureIndex])
-        );
+        const regularizedGradient =
+          weightGradients[classIndex][featureIndex] / samples.length +
+          L2_REGULARIZATION * weights[classIndex][featureIndex];
         weights[classIndex][featureIndex] -= LEARNING_RATE * regularizedGradient;
       }
     }
@@ -128,19 +109,18 @@ function trainSoftmax(samples) {
 }
 
 function predictClass(vector, weights, biases) {
-  const logits = weights.map((classWeights, classIndex) => (
+  const logits = weights.map((classWeights, classIndex) =>
     classWeights.reduce(
-      (total, weight, featureIndex) => total + (weight * vector[featureIndex]),
+      (total, weight, featureIndex) => total + weight * vector[featureIndex],
       biases[classIndex],
-    )
-  ));
+    ),
+  );
   return logits.indexOf(Math.max(...logits));
 }
 
 function calculateMetrics(samples, weights, biases) {
-  const confusionMatrix = Array.from(
-    { length: RISK_LEVELS.length },
-    () => Array(RISK_LEVELS.length).fill(0),
+  const confusionMatrix = Array.from({ length: RISK_LEVELS.length }, () =>
+    Array(RISK_LEVELS.length).fill(0),
   );
 
   for (const sample of samples) {
@@ -148,33 +128,22 @@ function calculateMetrics(samples, weights, biases) {
     confusionMatrix[sample.classIndex][predictedClass] += 1;
   }
 
-  const correct = confusionMatrix.reduce(
-    (total, row, index) => total + row[index],
-    0,
-  );
+  const correct = confusionMatrix.reduce((total, row, index) => total + row[index], 0);
   const f1Scores = RISK_LEVELS.map((_, classIndex) => {
     const truePositive = confusionMatrix[classIndex][classIndex];
     const falsePositive = confusionMatrix.reduce(
-      (total, row, rowIndex) => (
-        rowIndex === classIndex ? total : total + row[classIndex]
-      ),
+      (total, row, rowIndex) => (rowIndex === classIndex ? total : total + row[classIndex]),
       0,
     );
     const falseNegative = confusionMatrix[classIndex].reduce(
-      (total, count, columnIndex) => (
-        columnIndex === classIndex ? total : total + count
-      ),
+      (total, count, columnIndex) => (columnIndex === classIndex ? total : total + count),
       0,
     );
-    const precision = truePositive + falsePositive === 0
-      ? 0
-      : truePositive / (truePositive + falsePositive);
-    const recall = truePositive + falseNegative === 0
-      ? 0
-      : truePositive / (truePositive + falseNegative);
-    return precision + recall === 0
-      ? 0
-      : (2 * precision * recall) / (precision + recall);
+    const precision =
+      truePositive + falsePositive === 0 ? 0 : truePositive / (truePositive + falsePositive);
+    const recall =
+      truePositive + falseNegative === 0 ? 0 : truePositive / (truePositive + falseNegative);
+    return precision + recall === 0 ? 0 : (2 * precision * recall) / (precision + recall);
   });
 
   return {
@@ -194,10 +163,7 @@ export function buildModelArtifact() {
     seed: DEFAULT_SYNTHETIC_SEED,
     sampleCount: DEFAULT_SAMPLE_COUNT,
   });
-  const shuffledRecords = shuffle(
-    dataset.records,
-    createSeededRandom(DEFAULT_SYNTHETIC_SEED + 1),
-  );
+  const shuffledRecords = shuffle(dataset.records, createSeededRandom(DEFAULT_SYNTHETIC_SEED + 1));
   const trainingCount = Math.floor(shuffledRecords.length * TRAINING_FRACTION);
   const trainingRecords = shuffledRecords.slice(0, trainingCount);
   const validationRecords = shuffledRecords.slice(trainingCount);
@@ -244,18 +210,29 @@ export function buildModelArtifact() {
       validationMacroF1: Number(validationMetrics.macroF1.toFixed(4)),
       validationConfusionMatrix: validationMetrics.confusionMatrix,
       labels: dataset.labelRule,
-      limitation: "All training records and labels are synthetic. Metrics demonstrate pipeline behavior and are not evidence of clinical, psychological, or real-world educational validity.",
+      limitation:
+        "All training records and labels are synthetic. Metrics demonstrate pipeline behavior and are not evidence of clinical, psychological, or real-world educational validity.",
     },
   };
 }
 
-export function serializeModelArtifact(artifact) {
-  return `// Generated by scripts/train-model.js from deterministic synthetic data.\n// This artifact estimates academic workload for organizational support only.\n\nconst modelArtifact = ${JSON.stringify(artifact, null, 2)};\n\nexport default Object.freeze(modelArtifact);\n`;
+export async function serializeModelArtifact(artifact) {
+  const source = `// Generated by scripts/train-model.js from deterministic synthetic data.\n// This artifact estimates academic workload for organizational support only.\n\nconst modelArtifact = ${JSON.stringify(artifact, null, 2)};\n\nexport default Object.freeze(modelArtifact);\n`;
+
+  return format(source, {
+    parser: "babel",
+    semi: true,
+    singleQuote: false,
+    trailingComma: "all",
+    printWidth: 100,
+    tabWidth: 2,
+    useTabs: false,
+  });
 }
 
-function runCommand() {
+async function runCommand() {
   const artifact = buildModelArtifact();
-  const serialized = serializeModelArtifact(artifact);
+  const serialized = await serializeModelArtifact(artifact);
   const artifactUrl = new URL("../models/study-balance-model.js", import.meta.url);
   const artifactPath = fileURLToPath(artifactUrl);
   const checkOnly = process.argv.includes("--check");
@@ -266,23 +243,20 @@ function runCommand() {
       process.exitCode = 1;
       return;
     }
+
     console.log("The model artifact is reproducible and up to date.");
-  } else {
-    writeFileSync(artifactPath, serialized, "utf8");
-    console.log(`Wrote ${artifactPath}`);
+    return;
   }
 
-  console.log(JSON.stringify({
+  writeFileSync(artifactPath, serialized, "utf8");
+  const summary = {
     version: artifact.version,
     samples: artifact.training.sampleCount,
     validationAccuracy: artifact.training.validationAccuracy,
     validationMacroF1: artifact.training.validationMacroF1,
-  }, null, 2));
+  };
+
+  console.log(JSON.stringify(summary, null, 2));
 }
 
-const invokedDirectly = process.argv[1]
-  ? pathToFileURL(resolve(process.argv[1])).href === import.meta.url
-  : false;
-if (invokedDirectly) {
-  runCommand();
-}
+runCommand();
