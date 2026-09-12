@@ -13,15 +13,18 @@ const TYPE_LABELS = {
 const RISK_COPY = {
   low: {
     label: "Low demand",
-    message: "Your current schedule stays within the capacity and timing thresholds used by this prototype. Keep reviewing it as deadlines change.",
+    message:
+      "Your current schedule stays within the capacity and timing thresholds used by this prototype. Keep reviewing it as deadlines change.",
   },
   moderate: {
     label: "Moderate demand",
-    message: "Your week has some pressure points relative to the study time you entered. Review where work is concentrating before deadlines.",
+    message:
+      "Your week has some pressure points relative to the study time you entered. Review where work is concentrating before deadlines.",
   },
   high: {
     label: "High demand",
-    message: "Your plan concentrates more modeled academic work than the study time you entered. Review the planning options below.",
+    message:
+      "Your plan concentrates more modeled academic work than the study time you entered. Review the planning options below.",
   },
 };
 
@@ -166,7 +169,7 @@ function parseDate(date) {
 }
 
 function addDays(date, amount) {
-  return new Date(parseDate(date).getTime() + (amount * DAY_IN_MS)).toISOString().slice(0, 10);
+  return new Date(parseDate(date).getTime() + amount * DAY_IN_MS).toISOString().slice(0, 10);
 }
 
 function daysBetween(first, second) {
@@ -257,16 +260,22 @@ async function fetchJson(url, options = {}) {
 }
 
 function saveLocalState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({
-    demoMode: state.demoMode,
-    tasks: state.tasks,
-    weeklyAvailableHours: state.weeklyAvailableHours,
-  }));
-  localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify({
-    filter: state.filter,
-    search: state.search,
-    sort: state.sort,
-  }));
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({
+      demoMode: state.demoMode,
+      tasks: state.tasks,
+      weeklyAvailableHours: state.weeklyAvailableHours,
+    }),
+  );
+  localStorage.setItem(
+    VIEW_STORAGE_KEY,
+    JSON.stringify({
+      filter: state.filter,
+      search: state.search,
+      sort: state.sort,
+    }),
+  );
 }
 
 function clonePlannerState() {
@@ -297,26 +306,33 @@ async function undoLastChange() {
 }
 
 function isStoredTaskValid(task) {
-  return task
-    && typeof task === "object"
-    && typeof task.id === "string"
-    && typeof task.title === "string"
-    && typeof task.subject === "string"
-    && Object.hasOwn(TYPE_LABELS, task.type)
-    && /^\d{4}-\d{2}-\d{2}$/.test(task.deadline)
-    && Number.isFinite(task.estimatedHours)
-    && task.estimatedHours >= 0
-    && Number.isFinite(task.progress)
-    && task.progress >= 0
-    && task.progress <= 100
-    && ["low", "medium", "high"].includes(task.priority)
-    && typeof task.flexible === "boolean";
+  return (
+    task &&
+    typeof task === "object" &&
+    typeof task.id === "string" &&
+    typeof task.title === "string" &&
+    typeof task.subject === "string" &&
+    Object.hasOwn(TYPE_LABELS, task.type) &&
+    /^\d{4}-\d{2}-\d{2}$/.test(task.deadline) &&
+    Number.isFinite(task.estimatedHours) &&
+    task.estimatedHours >= 0 &&
+    Number.isFinite(task.progress) &&
+    task.progress >= 0 &&
+    task.progress <= 100 &&
+    ["low", "medium", "high"].includes(task.priority) &&
+    typeof task.flexible === "boolean"
+  );
 }
 
 function restoreLocalState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!saved || !Array.isArray(saved.tasks) || saved.tasks.some((task) => !isStoredTaskValid(task))) return false;
+    if (
+      !saved ||
+      !Array.isArray(saved.tasks) ||
+      saved.tasks.some((task) => !isStoredTaskValid(task))
+    )
+      return false;
     const hours = Number(saved.weeklyAvailableHours);
     state.tasks = saved.tasks;
     state.weeklyAvailableHours = Number.isFinite(hours) && hours > 0 ? hours : 18;
@@ -324,7 +340,8 @@ function restoreLocalState() {
     const view = JSON.parse(localStorage.getItem(VIEW_STORAGE_KEY) ?? "null");
     if (view && typeof view === "object") {
       if (["open", "week", "high", "all"].includes(view.filter)) state.filter = view.filter;
-      if (["deadline", "priority", "effort", "progress"].includes(view.sort)) state.sort = view.sort;
+      if (["deadline", "priority", "effort", "progress"].includes(view.sort))
+        state.sort = view.sort;
       if (typeof view.search === "string") state.search = view.search.slice(0, 80);
     }
     return true;
@@ -335,7 +352,10 @@ function restoreLocalState() {
 }
 
 function showToast(message, type = "success", action = null) {
-  if (action) elements.toastRegion.querySelectorAll(".toast-action").forEach((button) => button.closest(".toast")?.remove());
+  if (action)
+    elements.toastRegion
+      .querySelectorAll(".toast-action")
+      .forEach((button) => button.closest(".toast")?.remove());
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
   toast.innerHTML = `<span>${icon(type === "error" ? "info" : "check")}</span><div></div>`;
@@ -370,7 +390,11 @@ async function analyzeSchedule({ announce = false } = {}) {
   state.analysisStale = true;
   document.body.classList.add("analysis-pending", "analysis-stale");
   document.body.classList.remove("analysis-error");
-  document.querySelectorAll(".week-day-card, .load-day, .recommendation-action").forEach((button) => { button.disabled = true; });
+  document
+    .querySelectorAll(".week-day-card, .load-day, .recommendation-action")
+    .forEach((button) => {
+      button.disabled = true;
+    });
   renderDataBadge();
   renderMetrics();
   setButtonBusy(elements.refreshButton, true, "Analyzing…");
@@ -391,7 +415,12 @@ async function analyzeSchedule({ announce = false } = {}) {
     if (error.name === "AbortError") return false;
     console.error(error);
     state.analysisStatus = "error";
-    showToast(state.analysis ? "Forecast update failed. The previous forecast remains visible but inactive." : error.message, "error");
+    showToast(
+      state.analysis
+        ? "Forecast update failed. The previous forecast remains visible but inactive."
+        : error.message,
+      "error",
+    );
     renderLocalState();
     renderWeekExplorer();
     renderLoadChart();
@@ -409,12 +438,16 @@ async function analyzeSchedule({ announce = false } = {}) {
 
 async function loadDemo({ announce = true } = {}) {
   if (announce && !state.demoMode && state.tasks.length > 0) {
-    const confirmed = window.confirm("Replace your current local planner with artificial sample data? You can undo this change from the confirmation message.");
+    const confirmed = window.confirm(
+      "Replace your current local planner with artificial sample data? You can undo this change from the confirmation message.",
+    );
     if (!confirmed) return;
   }
   setButtonBusy(elements.loadDemoButton, true, "Loading…");
   try {
-    const demo = await fetchJson(`/api/demo?referenceDate=${encodeURIComponent(state.referenceDate)}`);
+    const demo = await fetchJson(
+      `/api/demo?referenceDate=${encodeURIComponent(state.referenceDate)}`,
+    );
     const canUndo = state.tasks.length > 0;
     if (canUndo) captureUndo("Loading sample data");
     else state.undoSnapshot = null;
@@ -425,7 +458,12 @@ async function loadDemo({ announce = true } = {}) {
     saveLocalState();
     renderLocalState();
     await analyzeSchedule();
-    if (announce) showToast("Artificial sample schedule loaded.", "success", canUndo ? { label: "Undo", callback: undoLastChange } : null);
+    if (announce)
+      showToast(
+        "Artificial sample schedule loaded.",
+        "success",
+        canUndo ? { label: "Undo", callback: undoLastChange } : null,
+      );
   } catch (error) {
     console.error(error);
     showToast(error.message, "error");
@@ -461,9 +499,12 @@ function renderPeriod() {
 
 function renderDataBadge() {
   const source = state.demoMode ? "Sample data" : "Your local data";
-  const status = state.analysisStatus === "pending"
-    ? " · refreshing forecast"
-    : state.analysisStatus === "error" ? " · update failed" : "";
+  const status =
+    state.analysisStatus === "pending"
+      ? " · refreshing forecast"
+      : state.analysisStatus === "error"
+        ? " · update failed"
+        : "";
   elements.dataBadge.textContent = `${source}${status}`;
   elements.dataBadge.classList.toggle("personal", !state.demoMode);
 }
@@ -482,17 +523,21 @@ function renderMetrics() {
   const loadRatio = state.analysis?.features?.loadRatio ?? 0;
 
   elements.metricOpenTasks.textContent = openTasks.length;
-  elements.metricOpenCaption.textContent = openTasks.length === 1 ? "task in your planner" : "tasks in your planner";
+  elements.metricOpenCaption.textContent =
+    openTasks.length === 1 ? "task in your planner" : "tasks in your planner";
   elements.metricDueWeek.textContent = dueThisWeek.length;
-  elements.metricDueCaption.textContent = dueThisWeek.length === 1 ? "deadline in 7 days" : "deadlines in 7 days";
+  elements.metricDueCaption.textContent =
+    dueThisWeek.length === 1 ? "deadline in 7 days" : "deadlines in 7 days";
   elements.metricHours.textContent = `${formatNumber(hours)} h`;
   elements.metricHoursCaption.textContent = "across open tasks";
   if (state.analysisStale) {
     elements.metricCapacity.textContent = "—";
-    elements.metricCapacityCaption.textContent = state.analysisStatus === "error" ? "forecast update failed" : "forecast refreshing";
+    elements.metricCapacityCaption.textContent =
+      state.analysisStatus === "error" ? "forecast update failed" : "forecast refreshing";
   } else {
     elements.metricCapacity.textContent = `${Math.round(loadRatio * 100)}%`;
-    elements.metricCapacityCaption.textContent = loadRatio > 1 ? "above weekly capacity" : "of weekly capacity";
+    elements.metricCapacityCaption.textContent =
+      loadRatio > 1 ? "above weekly capacity" : "of weekly capacity";
   }
 }
 
@@ -513,7 +558,10 @@ function renderRisk() {
   for (const level of ["low", "moderate", "high"]) {
     const percentage = Math.round((risk.probabilities[level] ?? 0) * 100);
     elements[`probability${titleCase(level)}`].value = percentage;
-    elements[`probability${titleCase(level)}`].setAttribute("aria-label", `${titleCase(level)} demand probability: ${percentage}%`);
+    elements[`probability${titleCase(level)}`].setAttribute(
+      "aria-label",
+      `${titleCase(level)} demand probability: ${percentage}%`,
+    );
     elements[`probability${titleCase(level)}Value`].textContent = `${percentage}%`;
   }
 }
@@ -521,7 +569,8 @@ function renderRisk() {
 function renderLoadChart() {
   elements.loadChart.replaceChildren();
   const days = state.analysis?.dailyLoad ?? [];
-  const maximum = Math.max(1, ...days.flatMap((day) => [day.plannedHours, day.availableHours])) * 1.15;
+  const maximum =
+    Math.max(1, ...days.flatMap((day) => [day.plannedHours, day.availableHours])) * 1.15;
   for (const [index, day] of days.entries()) {
     const container = document.createElement("button");
     container.type = "button";
@@ -540,10 +589,16 @@ function renderLoadChart() {
     const bar = document.createElement("progress");
     bar.max = maximum;
     bar.value = day.plannedHours;
-    bar.setAttribute("aria-label", `${formatDate(day.date, { weekday: "long" })}: ${formatNumber(day.plannedHours)} planned hours`);
+    bar.setAttribute(
+      "aria-label",
+      `${formatDate(day.date, { weekday: "long" })}: ${formatNumber(day.plannedHours)} planned hours`,
+    );
     const label = document.createElement("span");
     label.className = "load-day-label";
-    label.textContent = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: "UTC" }).format(parseDate(day.date));
+    label.textContent = new Intl.DateTimeFormat("en-US", {
+      weekday: "short",
+      timeZone: "UTC",
+    }).format(parseDate(day.date));
     container.append(hours, bar, label);
     elements.loadChart.append(container);
   }
@@ -564,10 +619,16 @@ function renderWeekExplorer() {
     button.disabled = state.analysisStale;
     button.setAttribute("aria-pressed", String(day.date === state.selectedDate));
     if (day.plannedHours > day.availableHours) button.classList.add("over-capacity");
-    const weekday = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: "UTC" }).format(parseDate(day.date));
-    const status = day.plannedHours > day.availableHours ? "Above daily guide" : "Within daily guide";
+    const weekday = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: "UTC" }).format(
+      parseDate(day.date),
+    );
+    const status =
+      day.plannedHours > day.availableHours ? "Above daily guide" : "Within daily guide";
     const barMaximum = Math.max(1, day.availableHours * 1.5, day.plannedHours);
-    button.setAttribute("aria-label", `${formatDate(day.date, { weekday: "long" })}: ${formatNumber(day.plannedHours)} modeled hours across ${day.taskCount} tasks. ${status}.`);
+    button.setAttribute(
+      "aria-label",
+      `${formatDate(day.date, { weekday: "long" })}: ${formatNumber(day.plannedHours)} modeled hours across ${day.taskCount} tasks. ${status}.`,
+    );
     button.innerHTML = `
       <span class="week-day-top"><span>${index === 0 ? "Today" : escapeHtml(weekday)}</span><strong>${escapeHtml(formatDate(day.date))}</strong></span>
       <span class="week-day-load"><strong>${formatNumber(day.plannedHours)}h</strong><small>of ${formatNumber(day.availableHours)}h</small></span>
@@ -597,7 +658,10 @@ function selectDay(date, { revealPlanner = false, focusOrigin = null } = {}) {
   renderWeekExplorer();
   renderLoadChart();
   if (focusOrigin) {
-    const selector = focusOrigin === "chart" ? `.load-day[data-date="${CSS.escape(date)}"]` : `.week-day-card[data-date="${CSS.escape(date)}"]`;
+    const selector =
+      focusOrigin === "chart"
+        ? `.load-day[data-date="${CSS.escape(date)}"]`
+        : `.week-day-card[data-date="${CSS.escape(date)}"]`;
     document.querySelector(selector)?.focus({ preventScroll: true });
   }
   if (revealPlanner) document.querySelector("#planner").scrollIntoView({ behavior: "smooth" });
@@ -607,7 +671,10 @@ function renderDayDrilldown() {
   const day = state.analysis?.dailyLoad?.find((candidate) => candidate.date === state.selectedDate);
   elements.selectedDayTasks.replaceChildren();
   if (!day) return;
-  elements.selectedDayLabel.textContent = formatDate(day.date, { weekday: "long", year: "numeric" });
+  elements.selectedDayLabel.textContent = formatDate(day.date, {
+    weekday: "long",
+    year: "numeric",
+  });
   elements.selectedDaySummary.textContent = `${formatNumber(day.plannedHours)} modeled hours across ${day.taskCount} ${day.taskCount === 1 ? "task" : "tasks"}; daily guide ${formatNumber(day.availableHours)} hours.`;
   const tasks = day.taskIds.map((id) => state.tasks.find((task) => task.id === id)).filter(Boolean);
   if (tasks.length === 0) {
@@ -638,14 +705,18 @@ async function rescheduleDraggedTask(date) {
   saveLocalState();
   renderLocalState();
   await analyzeSchedule();
-  showToast(`“${task.title}” moved to ${formatDate(date)}.`, "success", { label: "Undo", callback: undoLastChange });
+  showToast(`“${task.title}” moved to ${formatDate(date)}.`, "success", {
+    label: "Undo",
+    callback: undoLastChange,
+  });
 }
 
 function renderFactors() {
   elements.factorList.replaceChildren();
   const factors = state.analysis?.explanations ?? [];
   if (factors.length === 0) {
-    elements.factorList.innerHTML = '<div class="empty-inline">No material factor changed the estimate.</div>';
+    elements.factorList.innerHTML =
+      '<div class="empty-inline">No material factor changed the estimate.</div>';
     return;
   }
 
@@ -668,7 +739,8 @@ function renderRecommendations() {
   const recommendations = state.analysis?.recommendations ?? [];
   elements.actionCount.textContent = `${recommendations.length} ${recommendations.length === 1 ? "action" : "actions"}`;
   if (recommendations.length === 0) {
-    elements.recommendationList.innerHTML = '<div class="empty-inline">No planning action is needed yet.</div>';
+    elements.recommendationList.innerHTML =
+      '<div class="empty-inline">No planning action is needed yet.</div>';
     return;
   }
 
@@ -676,9 +748,10 @@ function renderRecommendations() {
     const item = document.createElement("div");
     item.className = "recommendation-item";
     const relatedCount = recommendation.relatedTaskIds?.length ?? 0;
-    const actionLabel = relatedCount > 0
-      ? `Review ${relatedCount} ${relatedCount === 1 ? "task" : "tasks"}`
-      : "Open scenario lab";
+    const actionLabel =
+      relatedCount > 0
+        ? `Review ${relatedCount} ${relatedCount === 1 ? "task" : "tasks"}`
+        : "Open scenario lab";
     item.innerHTML = `
       <span class="recommendation-check">${icon("arrow")}</span>
       <div class="recommendation-copy">
@@ -714,35 +787,63 @@ function focusTasks(taskIds) {
   renderTasks();
   document.querySelector("#planner").scrollIntoView({ behavior: "smooth" });
   window.setTimeout(() => {
-    const matchedCards = taskIds.map((id) => document.querySelector(`[data-task-id="${CSS.escape(id)}"]`)).filter(Boolean);
+    const matchedCards = taskIds
+      .map((id) => document.querySelector(`[data-task-id="${CSS.escape(id)}"]`))
+      .filter(Boolean);
     for (const card of matchedCards) card.classList.add("attention");
     if (matchedCards[0]) {
       matchedCards[0].tabIndex = -1;
       matchedCards[0].focus({ preventScroll: true });
     }
-    showToast(`${matchedCards.length} related ${matchedCards.length === 1 ? "task is" : "tasks are"} shown in the planner.`);
-    window.setTimeout(() => document.querySelectorAll(".task-card.attention").forEach((card) => card.classList.remove("attention")), 2_500);
+    showToast(
+      `${matchedCards.length} related ${matchedCards.length === 1 ? "task is" : "tasks are"} shown in the planner.`,
+    );
+    window.setTimeout(
+      () =>
+        document
+          .querySelectorAll(".task-card.attention")
+          .forEach((card) => card.classList.remove("attention")),
+      2_500,
+    );
   }, 450);
 }
 
 function filteredTasks() {
   const query = state.search.trim().toLocaleLowerCase("en-US");
   const priorityOrder = { high: 0, medium: 1, low: 2 };
-  return state.tasks.filter((task) => {
-    if (state.filter === "open") return task.progress < 100;
-    if (state.filter === "week") {
-      const days = daysBetween(task.deadline, state.referenceDate);
-      return task.progress < 100 && days >= 0 && days <= 6;
-    }
-    if (state.filter === "high") return task.progress < 100 && task.priority === "high";
-    return true;
-  }).filter((task) => !query || `${task.title} ${task.subject} ${TYPE_LABELS[task.type]}`.toLocaleLowerCase("en-US").includes(query)).sort((first, second) => {
-    if ((first.progress >= 100) !== (second.progress >= 100)) return first.progress >= 100 ? 1 : -1;
-    if (state.sort === "priority") return priorityOrder[first.priority] - priorityOrder[second.priority] || first.deadline.localeCompare(second.deadline);
-    if (state.sort === "effort") return remainingHours(second) - remainingHours(first) || first.deadline.localeCompare(second.deadline);
-    if (state.sort === "progress") return first.progress - second.progress || first.deadline.localeCompare(second.deadline);
-    return first.deadline.localeCompare(second.deadline);
-  });
+  return state.tasks
+    .filter((task) => {
+      if (state.filter === "open") return task.progress < 100;
+      if (state.filter === "week") {
+        const days = daysBetween(task.deadline, state.referenceDate);
+        return task.progress < 100 && days >= 0 && days <= 6;
+      }
+      if (state.filter === "high") return task.progress < 100 && task.priority === "high";
+      return true;
+    })
+    .filter(
+      (task) =>
+        !query ||
+        `${task.title} ${task.subject} ${TYPE_LABELS[task.type]}`
+          .toLocaleLowerCase("en-US")
+          .includes(query),
+    )
+    .sort((first, second) => {
+      if (first.progress >= 100 !== second.progress >= 100) return first.progress >= 100 ? 1 : -1;
+      if (state.sort === "priority")
+        return (
+          priorityOrder[first.priority] - priorityOrder[second.priority] ||
+          first.deadline.localeCompare(second.deadline)
+        );
+      if (state.sort === "effort")
+        return (
+          remainingHours(second) - remainingHours(first) ||
+          first.deadline.localeCompare(second.deadline)
+        );
+      if (state.sort === "progress")
+        return first.progress - second.progress || first.deadline.localeCompare(second.deadline);
+      return first.deadline.localeCompare(second.deadline);
+    });
 }
 
 function deadlineDescription(task) {
@@ -764,7 +865,9 @@ function renderTasks() {
   });
   elements.filterCountOpen.textContent = openTasks.length;
   elements.filterCountWeek.textContent = weekTasks.length;
-  elements.filterCountHigh.textContent = openTasks.filter((task) => task.priority === "high").length;
+  elements.filterCountHigh.textContent = openTasks.filter(
+    (task) => task.priority === "high",
+  ).length;
   elements.filterCountAll.textContent = state.tasks.length;
   elements.plannerResultCount.textContent = `${tasks.length} ${tasks.length === 1 ? "result" : "results"}`;
   elements.taskEmpty.classList.toggle("hidden", tasks.length > 0);
@@ -772,7 +875,9 @@ function renderTasks() {
   elements.exportButton.disabled = state.tasks.length === 0;
   if (tasks.length === 0) {
     const hasPlannerTasks = state.tasks.length > 0;
-    elements.taskEmpty.querySelector("h3").textContent = hasPlannerTasks ? "No tasks match this view" : "Your planner is ready";
+    elements.taskEmpty.querySelector("h3").textContent = hasPlannerTasks
+      ? "No tasks match this view"
+      : "Your planner is ready";
     elements.taskEmpty.querySelector("p").textContent = hasPlannerTasks
       ? "Try another filter or clear the search to see more tasks."
       : "Add a deadline, exam, or study task to build your first workload forecast.";
@@ -811,7 +916,10 @@ function renderTasks() {
       const restoredControl = document.querySelector(`[data-progress-id="${CSS.escape(taskId)}"]`);
       if (restoredControl) restoredControl.focus({ preventScroll: true });
       else elements.taskSearch.focus({ preventScroll: true });
-      showToast(`Progress updated to ${task.progress}%.`, "success", { label: "Undo", callback: undoLastChange });
+      showToast(`Progress updated to ${task.progress}%.`, "success", {
+        label: "Undo",
+        callback: undoLastChange,
+      });
     });
     item.addEventListener("dragstart", () => {
       state.draggedTaskId = task.id;
@@ -820,7 +928,9 @@ function renderTasks() {
     item.addEventListener("dragend", () => {
       state.draggedTaskId = null;
       item.classList.remove("dragging");
-      document.querySelectorAll(".drop-ready").forEach((target) => target.classList.remove("drop-ready"));
+      document
+        .querySelectorAll(".drop-ready")
+        .forEach((target) => target.classList.remove("drop-ready"));
     });
     elements.taskList.append(item);
   }
@@ -838,7 +948,8 @@ function renderSimulation() {
   elements.simulationAfter.textContent = state.simulation.response.simulated.risk.score;
   elements.simulationDescription.textContent = state.simulation.description;
   const comparison = state.simulation.response.comparison;
-  const signed = (value, suffix = "") => `${value > 0 ? "+" : ""}${formatNumber(value, 2)}${suffix}`;
+  const signed = (value, suffix = "") =>
+    `${value > 0 ? "+" : ""}${formatNumber(value, 2)}${suffix}`;
   elements.simulationDeltas.innerHTML = `
     <div class="simulation-delta"><span>Score change</span><strong>${signed(comparison.riskScoreDelta)}</strong></div>
     <div class="simulation-delta"><span>Peak day</span><strong>${signed(comparison.peakDailyHoursDelta, "h")}</strong></div>
@@ -856,9 +967,14 @@ function renderScenarioOptions() {
     .filter((task) => task.progress < 100 && task.flexible && task.type !== "exam")
     .sort((first, second) => first.deadline.localeCompare(second.deadline));
   elements.scenarioTaskSelect.replaceChildren(new Option("Capacity only", ""));
-  for (const task of tasks) elements.scenarioTaskSelect.add(new Option(`${task.title} · ${formatDate(task.deadline)}`, task.id));
+  for (const task of tasks)
+    elements.scenarioTaskSelect.add(
+      new Option(`${task.title} · ${formatDate(task.deadline)}`, task.id),
+    );
   if (tasks.some((task) => task.id === selectedId)) elements.scenarioTaskSelect.value = selectedId;
-  elements.scenarioCapacity.max = String(Math.min(168, Math.max(60, Math.ceil(state.weeklyAvailableHours * 2))));
+  elements.scenarioCapacity.max = String(
+    Math.min(168, Math.max(60, Math.ceil(state.weeklyAvailableHours * 2))),
+  );
   if (!elements.scenarioCapacity.dataset.initialized) {
     elements.scenarioCapacity.value = state.weeklyAvailableHours;
     elements.scenarioCapacity.dataset.initialized = "true";
@@ -908,7 +1024,10 @@ async function saveTask(event) {
   elements.taskDialog.close();
   renderLocalState();
   await analyzeSchedule();
-  showToast(existingIndex >= 0 ? "Task updated." : "Task added to your planner.", "success", { label: "Undo", callback: undoLastChange });
+  showToast(existingIndex >= 0 ? "Task updated." : "Task added to your planner.", "success", {
+    label: "Undo",
+    callback: undoLastChange,
+  });
 }
 
 async function handleTaskAction(event) {
@@ -942,9 +1061,12 @@ async function handleTaskAction(event) {
   saveLocalState();
   renderLocalState();
   await analyzeSchedule();
-  const message = button.dataset.action === "delete"
-    ? "Task deleted from this browser."
-    : task.progress >= 100 ? "Task marked complete." : `Task reopened at ${task.progress}% progress.`;
+  const message =
+    button.dataset.action === "delete"
+      ? "Task deleted from this browser."
+      : task.progress >= 100
+        ? "Task marked complete."
+        : `Task reopened at ${task.progress}% progress.`;
   showToast(message, "success", { label: "Undo", callback: undoLastChange });
 }
 
@@ -962,7 +1084,10 @@ async function updateCapacity() {
   resetScenario();
   renderLocalState();
   await analyzeSchedule();
-  showToast(`Weekly capacity updated to ${value} hours.`, "success", { label: "Undo", callback: undoLastChange });
+  showToast(`Weekly capacity updated to ${value} hours.`, "success", {
+    label: "Undo",
+    callback: undoLastChange,
+  });
 }
 
 function simulationCandidates() {
@@ -1005,17 +1130,21 @@ async function runSimulation() {
   }
   const { controller, sequence } = startSimulationRequest(elements.simulateButton, "Simulating…");
   try {
-    const scenarios = await Promise.all(candidates.map(async (task) => {
-      const updatedTask = { ...task, deadline: addDays(task.deadline, 7) };
-      const response = await fetchJson("/api/simulate", {
-        method: "POST",
-        body: JSON.stringify(currentPayload({ adjustments: { taskUpdates: [updatedTask] } })),
-        signal: controller.signal,
-      });
-      return { response, task, updatedTask };
-    }));
+    const scenarios = await Promise.all(
+      candidates.map(async (task) => {
+        const updatedTask = { ...task, deadline: addDays(task.deadline, 7) };
+        const response = await fetchJson("/api/simulate", {
+          method: "POST",
+          body: JSON.stringify(currentPayload({ adjustments: { taskUpdates: [updatedTask] } })),
+          signal: controller.signal,
+        });
+        return { response, task, updatedTask };
+      }),
+    );
     if (sequence !== state.simulationSequence) return;
-    const best = scenarios.sort((first, second) => first.response.simulated.risk.score - second.response.simulated.risk.score)[0];
+    const best = scenarios.sort(
+      (first, second) => first.response.simulated.risk.score - second.response.simulated.risk.score,
+    )[0];
     state.simulation = {
       ...best,
       hasChange: true,
@@ -1029,7 +1158,11 @@ async function runSimulation() {
     elements.scenarioShift.disabled = false;
     elements.scenarioShiftOutput.textContent = "+7 days";
     renderSimulation();
-    showToast(best.response.comparison.improved ? "A lower-score scenario is ready to inspect." : "The tested scenario is ready; its score did not decrease.");
+    showToast(
+      best.response.comparison.improved
+        ? "A lower-score scenario is ready to inspect."
+        : "The tested scenario is ready; its score did not decrease.",
+    );
   } catch (error) {
     if (error.name === "AbortError") return;
     console.error(error);
@@ -1044,12 +1177,17 @@ async function runSimulation() {
 
 async function previewScenario() {
   const weeklyAvailableHours = Number(elements.scenarioCapacity.value);
-  const task = state.tasks.find((candidate) => candidate.id === elements.scenarioTaskSelect.value) ?? null;
+  const task =
+    state.tasks.find((candidate) => candidate.id === elements.scenarioTaskSelect.value) ?? null;
   const shiftDays = task ? Number(elements.scenarioShift.value) : 0;
-  const updatedTask = task && shiftDays !== 0 ? { ...task, deadline: addDays(task.deadline, shiftDays) } : null;
+  const updatedTask =
+    task && shiftDays !== 0 ? { ...task, deadline: addDays(task.deadline, shiftDays) } : null;
   const hasCapacityChange = weeklyAvailableHours !== state.weeklyAvailableHours;
   const hasChange = hasCapacityChange || Boolean(updatedTask);
-  const { controller, sequence } = startSimulationRequest(elements.previewScenarioButton, "Previewing…");
+  const { controller, sequence } = startSimulationRequest(
+    elements.previewScenarioButton,
+    "Previewing…",
+  );
   try {
     const adjustments = {
       weeklyAvailableHours,
@@ -1063,14 +1201,18 @@ async function previewScenario() {
     if (sequence !== state.simulationSequence) return;
     const descriptions = [];
     if (hasCapacityChange) descriptions.push(`test ${weeklyAvailableHours} available hours`);
-    if (updatedTask) descriptions.push(`move “${task.title}” to ${formatDate(updatedTask.deadline)}`);
+    if (updatedTask)
+      descriptions.push(`move “${task.title}” to ${formatDate(updatedTask.deadline)}`);
     state.simulation = {
       response,
       task,
       updatedTask,
       weeklyAvailableHours,
       hasChange,
-      description: descriptions.length > 0 ? `Temporarily ${descriptions.join(" and ")}.` : "No temporary change is selected.",
+      description:
+        descriptions.length > 0
+          ? `Temporarily ${descriptions.join(" and ")}.`
+          : "No temporary change is selected.",
     };
     renderSimulation();
   } catch (error) {
@@ -1108,7 +1250,11 @@ async function applySimulation() {
   captureUndo("Applying the scenario");
   if (state.simulation.updatedTask) {
     const index = state.tasks.findIndex((task) => task.id === state.simulation.updatedTask.id);
-    if (index >= 0) state.tasks.splice(index, 1, { ...state.tasks[index], deadline: state.simulation.updatedTask.deadline });
+    if (index >= 0)
+      state.tasks.splice(index, 1, {
+        ...state.tasks[index],
+        deadline: state.simulation.updatedTask.deadline,
+      });
   }
   state.weeklyAvailableHours = state.simulation.weeklyAvailableHours;
   state.demoMode = false;
@@ -1116,25 +1262,43 @@ async function applySimulation() {
   resetScenario();
   renderLocalState();
   await analyzeSchedule();
-  showToast("The scenario was applied to your planner.", "success", { label: "Undo", callback: undoLastChange });
+  showToast("The scenario was applied to your planner.", "success", {
+    label: "Undo",
+    callback: undoLastChange,
+  });
   document.querySelector("#planner").scrollIntoView({ behavior: "smooth" });
 }
 
 function exportCsv() {
   if (state.tasks.length === 0) return;
-  const headers = ["title", "subject", "type", "deadline", "estimated_hours", "progress_percent", "priority", "flexible"];
+  const headers = [
+    "title",
+    "subject",
+    "type",
+    "deadline",
+    "estimated_hours",
+    "progress_percent",
+    "priority",
+    "flexible",
+  ];
   const csvCell = (value) => `"${String(value).replaceAll('"', '""')}"`;
-  const rows = state.tasks.map((task) => [
-    task.title,
-    task.subject,
-    task.type,
-    task.deadline,
-    task.estimatedHours,
-    task.progress,
-    task.priority,
-    task.flexible,
-  ].map(csvCell).join(","));
-  const blob = new Blob([[headers.join(","), ...rows].join("\n")], { type: "text/csv;charset=utf-8" });
+  const rows = state.tasks.map((task) =>
+    [
+      task.title,
+      task.subject,
+      task.type,
+      task.deadline,
+      task.estimatedHours,
+      task.progress,
+      task.priority,
+      task.flexible,
+    ]
+      .map(csvCell)
+      .join(","),
+  );
+  const blob = new Blob([[headers.join(","), ...rows].join("\n")], {
+    type: "text/csv;charset=utf-8",
+  });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = `study-balance-plan-${state.referenceDate}.csv`;
@@ -1144,7 +1308,12 @@ function exportCsv() {
 }
 
 async function clearLocalData() {
-  if (!window.confirm("Clear every task stored by StudyBalance in this browser? You can undo immediately from the confirmation message.")) return;
+  if (
+    !window.confirm(
+      "Clear every task stored by StudyBalance in this browser? You can undo immediately from the confirmation message.",
+    )
+  )
+    return;
   captureUndo("Clearing local data");
   localStorage.removeItem(STORAGE_KEY);
   localStorage.removeItem(VIEW_STORAGE_KEY);
@@ -1156,7 +1325,10 @@ async function clearLocalData() {
   resetScenario();
   renderLocalState();
   await analyzeSchedule();
-  showToast("All planner data was removed from browser storage.", "success", { label: "Undo", callback: undoLastChange });
+  showToast("All planner data was removed from browser storage.", "success", {
+    label: "Undo",
+    callback: undoLastChange,
+  });
 }
 
 function rankedOpenTasks() {
@@ -1166,9 +1338,11 @@ function rankedOpenTasks() {
     .sort((first, second) => {
       const firstDays = Math.max(-1, daysBetween(first.deadline, state.referenceDate));
       const secondDays = Math.max(-1, daysBetween(second.deadline, state.referenceDate));
-      return firstDays - secondDays
-        || priorityScore[first.priority] - priorityScore[second.priority]
-        || remainingHours(second) - remainingHours(first);
+      return (
+        firstDays - secondDays ||
+        priorityScore[first.priority] - priorityScore[second.priority] ||
+        remainingHours(second) - remainingHours(first)
+      );
     });
 }
 
@@ -1181,22 +1355,31 @@ function renderFocusPlan() {
     elements.focusTaskSelect.disabled = true;
   } else {
     elements.focusTaskSelect.disabled = false;
-    for (const task of tasks) elements.focusTaskSelect.add(new Option(`${task.title} · ${deadlineDescription(task)}`, task.id));
+    for (const task of tasks)
+      elements.focusTaskSelect.add(
+        new Option(`${task.title} · ${deadlineDescription(task)}`, task.id),
+      );
     if (tasks.some((task) => task.id === selectedId)) elements.focusTaskSelect.value = selectedId;
   }
 
   elements.focusPlanList.replaceChildren();
   const selectedTask = tasks.find((task) => task.id === elements.focusTaskSelect.value);
-  const sequence = selectedTask ? [selectedTask, ...tasks.filter((task) => task.id !== selectedTask.id)] : tasks;
+  const sequence = selectedTask
+    ? [selectedTask, ...tasks.filter((task) => task.id !== selectedTask.id)]
+    : tasks;
   for (const task of sequence.slice(0, 3)) {
-    const sessionMinutes = Math.max(15, Math.min(50, Math.round(Math.min(remainingHours(task), 1) * 60 / 5) * 5));
+    const sessionMinutes = Math.max(
+      15,
+      Math.min(50, Math.round((Math.min(remainingHours(task), 1) * 60) / 5) * 5),
+    );
     const item = document.createElement("li");
     item.innerHTML = `<span><strong>${escapeHtml(task.title)}</strong><small>${escapeHtml(task.subject)} · ${escapeHtml(deadlineDescription(task))}</small></span><time>${sessionMinutes} min</time>`;
     elements.focusPlanList.append(item);
   }
   if (tasks.length === 0) {
     const item = document.createElement("li");
-    item.innerHTML = "<span><strong>No open work to sequence</strong><small>Add or reopen a task when you are ready.</small></span><time>—</time>";
+    item.innerHTML =
+      "<span><strong>No open work to sequence</strong><small>Add or reopen a task when you are ready.</small></span><time>—</time>";
     elements.focusPlanList.append(item);
   }
 }
@@ -1205,7 +1388,10 @@ function updateFocusClock() {
   const minutes = Math.floor(state.focus.remainingSeconds / 60);
   const seconds = state.focus.remainingSeconds % 60;
   elements.focusTime.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-  elements.focusClock.setAttribute("aria-label", `${minutes} minutes and ${seconds} seconds remaining`);
+  elements.focusClock.setAttribute(
+    "aria-label",
+    `${minutes} minutes and ${seconds} seconds remaining`,
+  );
   elements.focusClock.classList.toggle("running", state.focus.running);
   elements.focusStartButton.innerHTML = state.focus.running
     ? `${icon("pause")}<span>Pause session</span>`
@@ -1349,14 +1535,21 @@ function handleCommandKeys(event) {
 }
 
 function isEditableTarget(target) {
-  return target instanceof HTMLInputElement
-    || target instanceof HTMLTextAreaElement
-    || target instanceof HTMLSelectElement
-    || target?.isContentEditable;
+  return (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLSelectElement ||
+    target?.isContentEditable
+  );
 }
 
 function handleGlobalShortcut(event) {
-  if ((event.ctrlKey || event.metaKey) && !event.altKey && !event.shiftKey && event.key.toLocaleLowerCase("en-US") === "k") {
+  if (
+    (event.ctrlKey || event.metaKey) &&
+    !event.altKey &&
+    !event.shiftKey &&
+    event.key.toLocaleLowerCase("en-US") === "k"
+  ) {
     if (document.querySelector("dialog[open]") && !elements.commandDialog.open) return;
     event.preventDefault();
     if (elements.commandDialog.open) {
@@ -1381,15 +1574,22 @@ function handleGlobalShortcut(event) {
 }
 
 function setupRevealAnimations() {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+  if (
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    !("IntersectionObserver" in window)
+  )
+    return;
   const targets = document.querySelectorAll(".metric-card, .panel, .principle-grid article");
-  const observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      entry.target.classList.add("revealed");
-      observer.unobserve(entry.target);
-    }
-  }, { threshold: 0.08 });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("revealed");
+        observer.unobserve(entry.target);
+      }
+    },
+    { threshold: 0.08 },
+  );
   targets.forEach((target) => {
     if (target.classList.contains("revealed")) return;
     target.classList.add("reveal-ready");
@@ -1444,12 +1644,18 @@ function bindEvents() {
   elements.riskInfoButton.addEventListener("click", showScoreDialog);
   elements.focusButton.addEventListener("click", openFocusMode);
   elements.mobileFocusButton.addEventListener("click", openFocusMode);
-  document.querySelector(".focus-close").addEventListener("click", () => elements.focusDialog.close());
+  document
+    .querySelector(".focus-close")
+    .addEventListener("click", () => elements.focusDialog.close());
   elements.focusDialog.addEventListener("close", pauseFocusTimer);
   elements.focusStartButton.addEventListener("click", toggleFocusTimer);
   elements.focusResetButton.addEventListener("click", resetFocusTimer);
   elements.focusTaskSelect.addEventListener("change", renderFocusPlan);
-  document.querySelectorAll(".focus-duration button").forEach((button) => button.addEventListener("click", () => setFocusDuration(Number(button.dataset.minutes))));
+  document
+    .querySelectorAll(".focus-duration button")
+    .forEach((button) =>
+      button.addEventListener("click", () => setFocusDuration(Number(button.dataset.minutes))),
+    );
 
   elements.commandButton.addEventListener("click", openCommandPalette);
   elements.commandSearch.addEventListener("input", filterCommands);
