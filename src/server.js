@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { extname, join, normalize, relative } from "node:path";
@@ -135,7 +136,14 @@ async function serveStatic(response, pathname, publicDirectory, method) {
 }
 
 async function handleRequest(request, response, options) {
-  const url = new URL(request.url ?? "/", "http://localhost");
+  let url;
+  try {
+    url = new URL(request.url ?? "/", "http://localhost");
+  } catch {
+    writeJson(response, 400, { error: "The request URL is malformed." });
+    return;
+  }
+
   const method = request.method ?? "GET";
 
   if (method === "GET" && url.pathname === "/api/health") {
@@ -186,6 +194,9 @@ export function createAppServer(options = {}) {
   };
 
   return createServer((request, response) => {
+    const requestId = request.headers["x-request-id"] ?? randomUUID();
+    response.setHeader("X-Request-Id", requestId);
+
     handleRequest(request, response, serverOptions).catch((error) => {
       const domainValidationError =
         error instanceof TypeError || error instanceof RangeError || error instanceof URIError;
@@ -194,7 +205,16 @@ export function createAppServer(options = {}) {
         : domainValidationError
           ? 400
           : 500;
-      if (statusCode >= 500) console.error(error);
+
+      if (statusCode >= 500) {
+        console.error({
+          requestId,
+          method: request.method ?? "GET",
+          url: request.url ?? "",
+          error: error instanceof Error ? (error.stack ?? error.message) : error,
+        });
+      }
+
       if (!response.headersSent) {
         writeJson(response, statusCode, {
           error: statusCode >= 500 ? "The analysis could not be completed." : error.message,

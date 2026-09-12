@@ -50,6 +50,7 @@ describe("application server", () => {
     assert.equal(response.status, 200);
     assert.match(response.headers.get("content-type") ?? "", /application\/json/i);
     assert.equal(body.status, "ok");
+    assert.match(response.headers.get("x-request-id") ?? "", /.+/);
   });
 
   test("analyzes and simulates valid schedules through the API", async () => {
@@ -82,6 +83,7 @@ describe("application server", () => {
     });
     const invalidJson = await invalidJsonResponse.json();
     assert.equal(invalidJsonResponse.status, 400);
+    assert.match(invalidJsonResponse.headers.get("x-request-id") ?? "", /.+/);
     assert.equal(typeof invalidJson.error, "string");
     assert.ok(invalidJson.error.length > 0);
     assert.equal("stack" in invalidJson, false);
@@ -92,6 +94,7 @@ describe("application server", () => {
       referenceDate: "2026-03-02",
     });
     assert.equal(invalidScheduleResponse.status, 400);
+    assert.match(invalidScheduleResponse.headers.get("x-request-id") ?? "", /.+/);
 
     const invalidTaskResponse = await postJson("/api/analyze", {
       ...createLightSchedule(),
@@ -104,6 +107,7 @@ describe("application server", () => {
     });
     const invalidTask = await invalidTaskResponse.json();
     assert.equal(invalidTaskResponse.status, 400);
+    assert.match(invalidTaskResponse.headers.get("x-request-id") ?? "", /.+/);
     assert.match(invalidTask.error, /progress/i);
 
     const unsupportedTypeResponse = await fetch(`${baseUrl}/api/analyze`, {
@@ -113,6 +117,7 @@ describe("application server", () => {
     });
     const unsupportedType = await unsupportedTypeResponse.json();
     assert.equal(unsupportedTypeResponse.status, 415);
+    assert.match(unsupportedTypeResponse.headers.get("x-request-id") ?? "", /.+/);
     assert.match(unsupportedType.error, /application\/json/i);
   });
 
@@ -122,6 +127,7 @@ describe("application server", () => {
       const body = await response.json();
       assert.equal(response.status, 404);
       assert.equal(typeof body.error, "string");
+      assert.match(response.headers.get("x-request-id") ?? "", /.+/);
     }
   });
 });

@@ -23,16 +23,6 @@ function randomInteger(random, minimum, maximum) {
   return Math.floor(randomBetween(random, minimum, maximum + 1));
 }
 
-function binomial(random, trials, probability) {
-  let successes = 0;
-  for (let index = 0; index < trials; index += 1) {
-    if (random() < probability) {
-      successes += 1;
-    }
-  }
-  return successes;
-}
-
 function gaussianNoise(random) {
   const first = Math.max(random(), Number.EPSILON);
   const second = random();
@@ -48,9 +38,65 @@ function round(value, precision = 4) {
   return Math.round((value + Number.EPSILON) * factor) / factor;
 }
 
-function generateFeatureRow(random) {
-  const pendingTaskCount = randomInteger(random, 0, 20);
-  const weeklyAvailableHours = round(randomBetween(random, 6, 46), 2);
+const RISK_PROFILE_CONFIG = {
+  low: {
+    pendingTaskCount: [0, 6],
+    overdueTaskCount: [0, 1],
+    dueWithin7DaysCount: [0, 2],
+    examWithin14DaysCount: [0, 1],
+    highPriorityTaskCount: [0, 2],
+    weeklyAvailableHours: [18, 46],
+    averageProgress: [70, 100],
+    remainingHoursPerTask: [1.4, 4.5],
+    dueWithin7DaysHoursPerTask: [1.2, 3.2],
+    overdueHoursPerTask: [0.8, 2.2],
+    futureHoursRatio: [0.02, 0.15],
+    loadRatioMinimum: 0.1,
+    loadRatioMaximum: 0.95,
+  },
+  moderate: {
+    pendingTaskCount: [4, 12],
+    overdueTaskCount: [0, 3],
+    dueWithin7DaysCount: [1, 6],
+    examWithin14DaysCount: [0, 3],
+    highPriorityTaskCount: [1, 4],
+    weeklyAvailableHours: [10, 34],
+    averageProgress: [35, 80],
+    remainingHoursPerTask: [1.8, 5.5],
+    dueWithin7DaysHoursPerTask: [1.4, 4.5],
+    overdueHoursPerTask: [1.4, 4.4],
+    futureHoursRatio: [0.08, 0.22],
+    loadRatioMinimum: 0.45,
+    loadRatioMaximum: 1.5,
+  },
+  high: {
+    pendingTaskCount: [8, 20],
+    overdueTaskCount: [1, 6],
+    dueWithin7DaysCount: [4, 12],
+    examWithin14DaysCount: [1, 6],
+    highPriorityTaskCount: [2, 8],
+    weeklyAvailableHours: [6, 28],
+    averageProgress: [0, 55],
+    remainingHoursPerTask: [2.4, 7.2],
+    dueWithin7DaysHoursPerTask: [2, 6.5],
+    overdueHoursPerTask: [2.4, 6.8],
+    futureHoursRatio: [0.12, 0.35],
+    loadRatioMinimum: 1.1,
+    loadRatioMaximum: 2.5,
+  },
+};
+
+function generateFeatureRow(random, targetLabel = "moderate") {
+  const profile = RISK_PROFILE_CONFIG[targetLabel] ?? RISK_PROFILE_CONFIG.moderate;
+  const pendingTaskCount = randomInteger(
+    random,
+    profile.pendingTaskCount[0],
+    profile.pendingTaskCount[1],
+  );
+  const weeklyAvailableHours = round(
+    randomBetween(random, profile.weeklyAvailableHours[0], profile.weeklyAvailableHours[1]),
+    2,
+  );
 
   if (pendingTaskCount === 0) {
     return {
@@ -69,41 +115,64 @@ function generateFeatureRow(random) {
     };
   }
 
-  const averageProgress = round(randomBetween(random, 0, 88), 2);
-  const overdueTaskCount = binomial(random, pendingTaskCount, randomBetween(random, 0, 0.3));
-  const nonOverdueCount = pendingTaskCount - overdueTaskCount;
-  const dueWithin7DaysCount = binomial(random, nonOverdueCount, randomBetween(random, 0.08, 0.72));
-  const examWithin14DaysCount = binomial(
-    random,
-    nonOverdueCount,
-    randomBetween(random, 0.02, 0.28),
+  const averageProgress = round(
+    randomBetween(random, profile.averageProgress[0], profile.averageProgress[1]),
+    2,
   );
-  const highPriorityTaskCount = binomial(
-    random,
+  const overdueTaskCount = Math.min(
     pendingTaskCount,
-    randomBetween(random, 0.1, 0.58),
+    randomInteger(random, profile.overdueTaskCount[0], profile.overdueTaskCount[1]),
+  );
+  const nonOverdueCount = Math.max(0, pendingTaskCount - overdueTaskCount);
+  const dueWithin7DaysCount = Math.min(
+    nonOverdueCount,
+    randomInteger(random, profile.dueWithin7DaysCount[0], profile.dueWithin7DaysCount[1]),
+  );
+  const remainingNonurgentCount = Math.max(0, nonOverdueCount - dueWithin7DaysCount);
+  const examWithin14DaysCount = Math.min(
+    remainingNonurgentCount,
+    randomInteger(random, profile.examWithin14DaysCount[0], profile.examWithin14DaysCount[1]),
+  );
+  const highPriorityTaskCount = Math.min(
+    pendingTaskCount,
+    randomInteger(random, profile.highPriorityTaskCount[0], profile.highPriorityTaskCount[1]),
   );
   const deadlineCluster3Days = Math.min(
     pendingTaskCount,
     dueWithin7DaysCount + overdueTaskCount,
     randomInteger(random, 0, Math.max(1, dueWithin7DaysCount + overdueTaskCount)),
   );
-  const baseRemainingHours = pendingTaskCount * randomBetween(random, 1.2, 7.2);
+  const baseRemainingHours =
+    pendingTaskCount *
+    randomBetween(random, profile.remainingHoursPerTask[0], profile.remainingHoursPerTask[1]);
   const progressAdjustment = 1 - averageProgress / 160;
   const remainingHours = round(baseRemainingHours * progressAdjustment, 2);
   const dueWithin7DaysHours = round(
-    Math.min(remainingHours, dueWithin7DaysCount * randomBetween(random, 1.2, 8)),
+    Math.min(
+      remainingHours,
+      dueWithin7DaysCount *
+        randomBetween(
+          random,
+          profile.dueWithin7DaysHoursPerTask[0],
+          profile.dueWithin7DaysHoursPerTask[1],
+        ),
+    ),
     2,
   );
   const overdueHours = Math.min(
     Math.max(0, remainingHours - dueWithin7DaysHours),
-    overdueTaskCount * randomBetween(random, 1, 7),
+    overdueTaskCount *
+      randomBetween(random, profile.overdueHoursPerTask[0], profile.overdueHoursPerTask[1]),
   );
   const pacedFutureHours =
     Math.max(0, remainingHours - dueWithin7DaysHours - overdueHours) *
-    randomBetween(random, 0.05, 0.3);
-  const loadRatio = round(
-    (dueWithin7DaysHours + overdueHours + pacedFutureHours) / weeklyAvailableHours,
+    randomBetween(random, profile.futureHoursRatio[0], profile.futureHoursRatio[1]);
+  const loadRatio = Math.min(
+    profile.loadRatioMaximum,
+    Math.max(
+      profile.loadRatioMinimum,
+      round((dueWithin7DaysHours + overdueHours + pacedFutureHours) / weeklyAvailableHours),
+    ),
   );
   const nearestDeadlineDays =
     overdueTaskCount > 0
@@ -144,16 +213,6 @@ function syntheticPressureScore(features, random) {
   return score;
 }
 
-function labelForScore(score) {
-  if (score < 20) {
-    return "low";
-  }
-  if (score < 52) {
-    return "moderate";
-  }
-  return "high";
-}
-
 export function generateSyntheticDataset({
   seed = DEFAULT_SYNTHETIC_SEED,
   sampleCount = DEFAULT_SAMPLE_COUNT,
@@ -170,33 +229,30 @@ export function generateSyntheticDataset({
       baseQuota + (index < sampleCount % RISK_LEVELS.length ? 1 : 0),
     ]),
   );
-  const classCounts = Object.fromEntries(RISK_LEVELS.map((label) => [label, 0]));
+
   const records = [];
-  let attempts = 0;
-  const maximumAttempts = sampleCount * 100;
+  for (const label of RISK_LEVELS) {
+    for (let index = 0; index < quotas[label]; index += 1) {
+      const features = generateFeatureRow(random, label);
+      const latentScore = syntheticPressureScore(features, random);
 
-  while (records.length < sampleCount && attempts < maximumAttempts) {
-    attempts += 1;
-    const features = generateFeatureRow(random);
-    const latentScore = syntheticPressureScore(features, random);
-    const label = labelForScore(latentScore);
-
-    if (classCounts[label] >= quotas[label]) {
-      continue;
+      records.push(
+        Object.freeze({
+          features: Object.freeze(features),
+          label,
+          latentScore: round(latentScore),
+        }),
+      );
     }
-
-    records.push(
-      Object.freeze({
-        features: Object.freeze(features),
-        label,
-        latentScore: round(latentScore),
-      }),
-    );
-    classCounts[label] += 1;
   }
 
   if (records.length !== sampleCount) {
     throw new Error("Unable to generate the requested balanced synthetic dataset.");
+  }
+
+  const classCounts = Object.fromEntries(RISK_LEVELS.map((label) => [label, 0]));
+  for (const record of records) {
+    classCounts[record.label] += 1;
   }
 
   for (const record of records) {
