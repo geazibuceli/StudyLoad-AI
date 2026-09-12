@@ -119,13 +119,13 @@ Choose a task and an optional 15-, 25-, or 45-minute timer. Starting, pausing, o
 
 Press `Ctrl+K` on Windows or Linux, or `Command+K` on macOS, to open the command palette. The following single-key shortcuts work when focus is not inside an editable control:
 
-| Shortcut | Action |
-|---|---|
-| `N` | Open the new-task form |
-| `F` | Open Focus mode |
-| `R` | Refresh the forecast |
-| `P` | Go to the planner |
-| `/` | Move to planner search |
+| Shortcut | Action                 |
+| -------- | ---------------------- |
+| `N`      | Open the new-task form |
+| `F`      | Open Focus mode        |
+| `R`      | Refresh the forecast   |
+| `P`      | Go to the planner      |
+| `/`      | Move to planner search |
 
 Privacy and limitations remain available as a command-palette action without a single-key shortcut. Single-key shortcuts are suppressed while you type in an input, text area, select control, or other editable field. Visible controls provide the same core actions. On narrow screens, the mobile action dock links to the overview, interactive week, new-task form, planner, and Focus mode.
 
