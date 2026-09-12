@@ -2,20 +2,20 @@
 
 ## Dataset summary
 
-| Item | Value |
-|---|---|
-| Dataset name | StudyBalance AI synthetic workload dataset |
-| Dataset version | `1.0.0` as embedded in model artifact `1.0.0` |
-| Generator | `scripts/synthetic-data.js` |
-| Default seed | `42` |
-| Records | 3,600 |
-| Features | 12 numerical academic workload features |
-| Labels | `low`, `moderate`, `high` |
-| Class balance | 1,200 records per class by construction |
-| Personal data | None |
-| Missing values | None by construction |
-| Storage | Generated in memory; summarized in the versioned model artifact |
-| License | MIT |
+| Item            | Value                                                           |
+| --------------- | --------------------------------------------------------------- |
+| Dataset name    | StudyBalance AI synthetic workload dataset                      |
+| Dataset version | `1.0.0` as embedded in model artifact `1.0.0`                   |
+| Generator       | `scripts/synthetic-data.js`                                     |
+| Default seed    | `42`                                                            |
+| Records         | 3,600                                                           |
+| Features        | 12 numerical academic workload features                         |
+| Labels          | `low`, `moderate`, `high`                                       |
+| Class balance   | 1,200 records per class by construction                         |
+| Personal data   | None                                                            |
+| Missing values  | None by construction                                            |
+| Storage         | Generated in memory; summarized in the versioned model artifact |
+| License         | MIT                                                             |
 
 ## Purpose
 
@@ -41,20 +41,20 @@ The generator creates features directly. It does not first create a complete set
 
 ## Feature schema
 
-| Feature | Synthetic generation |
-|---|---|
-| `pendingTaskCount` | Integer from 0 through 20 |
-| `overdueTaskCount` | Binomial draw bounded by pending tasks, using a sampled probability from 0 up to, but not including, 0.30 |
-| `dueWithin7DaysCount` | Binomial draw over non-overdue tasks, using a sampled probability from 0.08 up to, but not including, 0.72 |
+| Feature                 | Synthetic generation                                                                                       |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `pendingTaskCount`      | Integer from 0 through 20                                                                                  |
+| `overdueTaskCount`      | Binomial draw bounded by pending tasks, using a sampled probability from 0 up to, but not including, 0.30  |
+| `dueWithin7DaysCount`   | Binomial draw over non-overdue tasks, using a sampled probability from 0.08 up to, but not including, 0.72 |
 | `examWithin14DaysCount` | Binomial draw over non-overdue tasks, using a sampled probability from 0.02 up to, but not including, 0.28 |
-| `remainingHours` | Pending task count multiplied by sampled effort and adjusted by average progress |
-| `dueWithin7DaysHours` | Bounded by remaining hours and scaled by near-term task count |
-| `weeklyAvailableHours` | Continuous draw from 6 up to, but not including, 46 hours |
-| `loadRatio` | Constructed near-term, overdue, and paced future hours divided by availability |
-| `deadlineCluster3Days` | Integer bounded by pending, near-term, and overdue task counts |
-| `highPriorityTaskCount` | Binomial draw over pending tasks, using a sampled probability from 0.10 up to, but not including, 0.58 |
-| `nearestDeadlineDays` | 0 when overdue work exists; otherwise 0 through 6 for near-term work or 7 through 30 |
-| `averageProgress` | Continuous draw from 0 up to, but not including, 88 percent when work is pending |
+| `remainingHours`        | Pending task count multiplied by sampled effort and adjusted by average progress                           |
+| `dueWithin7DaysHours`   | Bounded by remaining hours and scaled by near-term task count                                              |
+| `weeklyAvailableHours`  | Continuous draw from 6 up to, but not including, 46 hours                                                  |
+| `loadRatio`             | Constructed near-term, overdue, and paced future hours divided by availability                             |
+| `deadlineCluster3Days`  | Integer bounded by pending, near-term, and overdue task counts                                             |
+| `highPriorityTaskCount` | Binomial draw over pending tasks, using a sampled probability from 0.10 up to, but not including, 0.58     |
+| `nearestDeadlineDays`   | 0 when overdue work exists; otherwise 0 through 6 for near-term work or 7 through 30                       |
+| `averageProgress`       | Continuous draw from 0 up to, but not including, 88 percent when work is pending                           |
 
 When `pendingTaskCount` is zero, dependent workload features are zero, `nearestDeadlineDays` is 30, and `averageProgress` is 100.
 
@@ -83,11 +83,11 @@ where \(\epsilon\) is a standard Gaussian value produced by the deterministic se
 
 Labels are assigned as follows:
 
-| Label | Latent score rule |
-|---|---|
-| `low` | Below 20 |
+| Label      | Latent score rule                    |
+| ---------- | ------------------------------------ |
+| `low`      | Below 20                             |
 | `moderate` | From 20 up to, but not including, 52 |
-| `high` | 52 or higher |
+| `high`     | 52 or higher                         |
 
 The score and thresholds are project assumptions created for demonstration. They are not derived from a validated questionnaire, student outcome, health measure, or expert annotation.
 
@@ -101,11 +101,11 @@ This rejection process creates exact class balance but changes the natural frequ
 
 The 3,600 accepted records are shuffled with a second deterministic stream initialized with seed `43`. The first 80 percent form the training split and the remaining 20 percent form the synthetic validation split.
 
-| Split | Records | Low | Moderate | High |
-|---|---:|---:|---:|---:|
-| Full generated set | 3,600 | 1,200 | 1,200 | 1,200 |
-| Training | 2,880 | 966 | 966 | 948 |
-| Validation | 720 | 234 | 234 | 252 |
+| Split              | Records |   Low | Moderate |  High |
+| ------------------ | ------: | ----: | -------: | ----: |
+| Full generated set |   3,600 | 1,200 |    1,200 | 1,200 |
+| Training           |   2,880 |   966 |      966 |   948 |
+| Validation         |     720 |   234 |      234 |   252 |
 
 Validation class counts are obtained from the row totals of the committed confusion matrix; training counts are the corresponding remainder from the balanced full set. Normalization means and population standard deviations are calculated from the training split only.
 
