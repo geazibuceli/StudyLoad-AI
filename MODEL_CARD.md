@@ -2,20 +2,20 @@
 
 ## Model details
 
-| Item | Value |
-|---|---|
-| Model name | StudyBalance AI academic workload model |
-| Artifact version | `1.0.0` |
-| Schema version | `1` |
-| Release date | 2026-08-24 |
-| Model family | Multinomial logistic regression with softmax output |
-| Classes | `low`, `moderate`, `high` |
-| Forecast horizon | Seven calendar days |
-| Training data | Deterministic synthetic feature records only |
-| Synthetic seed | `42` |
-| Runtime | Node.js 22+ using JavaScript ESM |
-| Runtime dependencies | None |
-| License | MIT |
+| Item                 | Value                                               |
+| -------------------- | --------------------------------------------------- |
+| Model name           | StudyBalance AI academic workload model             |
+| Artifact version     | `1.0.0`                                             |
+| Schema version       | `1`                                                 |
+| Release date         | 2026-08-24                                          |
+| Model family         | Multinomial logistic regression with softmax output |
+| Classes              | `low`, `moderate`, `high`                           |
+| Forecast horizon     | Seven calendar days                                 |
+| Training data        | Deterministic synthetic feature records only        |
+| Synthetic seed       | `42`                                                |
+| Runtime              | Node.js 22+ using JavaScript ESM                    |
+| Runtime dependencies | None                                                |
+| License              | MIT                                                 |
 
 The versioned artifact is stored in `models/study-balance-model.js`. Training logic is stored in `scripts/train-model.js`, and the synthetic generator is stored in `scripts/synthetic-data.js`.
 
@@ -54,20 +54,20 @@ The model is not intended to operate silently in the background or to produce re
 
 The model receives twelve numerical features derived from a validated schedule. It does not process free text, names, task titles, subject labels, or demographic attributes.
 
-| Feature | Definition |
-|---|---|
-| `pendingTaskCount` | Number of tasks with progress below 100 percent |
-| `overdueTaskCount` | Pending tasks with deadlines before the reference date |
-| `dueWithin7DaysCount` | Pending, non-overdue tasks due from day zero through day six |
-| `examWithin14DaysCount` | Pending exams due from day zero through day thirteen |
-| `remainingHours` | Sum of estimated hours remaining after progress is applied |
-| `dueWithin7DaysHours` | Remaining hours attached to tasks due within seven days |
-| `weeklyAvailableHours` | User-supplied planning availability for the week |
-| `loadRatio` | Modeled weekly hours divided by weekly available hours |
-| `deadlineCluster3Days` | Largest task count inside a three-day window before day fourteen; all overdue deadlines, including older ones, are folded into day zero |
-| `highPriorityTaskCount` | Pending tasks marked as high priority |
-| `nearestDeadlineDays` | Bounded non-negative distance to the nearest pending deadline; defaults to 30 with no pending task |
-| `averageProgress` | Mean progress among pending tasks; defaults to 100 with no pending task |
+| Feature                 | Definition                                                                                                                              |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `pendingTaskCount`      | Number of tasks with progress below 100 percent                                                                                         |
+| `overdueTaskCount`      | Pending tasks with deadlines before the reference date                                                                                  |
+| `dueWithin7DaysCount`   | Pending, non-overdue tasks due from day zero through day six                                                                            |
+| `examWithin14DaysCount` | Pending exams due from day zero through day thirteen                                                                                    |
+| `remainingHours`        | Sum of estimated hours remaining after progress is applied                                                                              |
+| `dueWithin7DaysHours`   | Remaining hours attached to tasks due within seven days                                                                                 |
+| `weeklyAvailableHours`  | User-supplied planning availability for the week                                                                                        |
+| `loadRatio`             | Modeled weekly hours divided by weekly available hours                                                                                  |
+| `deadlineCluster3Days`  | Largest task count inside a three-day window before day fourteen; all overdue deadlines, including older ones, are folded into day zero |
+| `highPriorityTaskCount` | Pending tasks marked as high priority                                                                                                   |
+| `nearestDeadlineDays`   | Bounded non-negative distance to the nearest pending deadline; defaults to 30 with no pending task                                      |
+| `averageProgress`       | Mean progress among pending tasks; defaults to 100 with no pending task                                                                 |
 
 Feature order is part of schema version `1`. The artifact stores the training-set mean and population standard deviation for each feature. Inference applies z-score standardization and clips each standardized value to the interval from `-6` through `6` to limit extreme numerical extrapolation.
 
@@ -98,11 +98,11 @@ The score is a convenience index created by this project. It is not a validated 
 
 The training pipeline generates 3,600 artificial feature records with seed `42`, balanced to exactly 1,200 records per synthetic class. It then shuffles them with seed `43` and uses an 80/20 holdout split:
 
-| Partition | Records |
-|---|---:|
-| Training | 2,880 |
-| Synthetic validation | 720 |
-| Total | 3,600 |
+| Partition            | Records |
+| -------------------- | ------: |
+| Training             |   2,880 |
+| Synthetic validation |     720 |
+| Total                |   3,600 |
 
 Synthetic labels come from a hand-designed latent workload score plus deterministic seeded Gaussian noise:
 
@@ -114,32 +114,32 @@ Class balancing uses rejection sampling until each quota is filled. See [DATA_CA
 
 ## Training procedure
 
-| Setting | Value |
-|---|---:|
-| Optimization | Full-batch gradient descent |
-| Iterations | 900 |
-| Learning rate | 0.08 |
-| L2 regularization | 0.002 |
-| Initialization | Zero weights and biases |
-| Normalization | Training-set z-score using population standard deviation |
-| Artifact timestamp | Fixed at `2026-08-24T00:00:00.000Z` for reproducibility |
+| Setting            |                                                    Value |
+| ------------------ | -------------------------------------------------------: |
+| Optimization       |                              Full-batch gradient descent |
+| Iterations         |                                                      900 |
+| Learning rate      |                                                     0.08 |
+| L2 regularization  |                                                    0.002 |
+| Initialization     |                                  Zero weights and biases |
+| Normalization      | Training-set z-score using population standard deviation |
+| Artifact timestamp |  Fixed at `2026-08-24T00:00:00.000Z` for reproducibility |
 
 The training process is deterministic for the same supported runtime and source version. User tasks are never used for online learning or automatic retraining.
 
 ## Synthetic evaluation
 
-| Metric | Training split | Validation split |
-|---|---:|---:|
-| Accuracy | 0.9177 | 0.9014 |
-| Macro F1 | 0.9183 | 0.9011 |
+| Metric   | Training split | Validation split |
+| -------- | -------------: | ---------------: |
+| Accuracy |         0.9177 |           0.9014 |
+| Macro F1 |         0.9183 |           0.9011 |
 
 Validation confusion matrix, with rows as synthetic true labels and columns as predicted labels:
 
 | Actual \ Predicted | Low | Moderate | High |
-|---|---:|---:|---:|
-| Low | 214 | 20 | 0 |
-| Moderate | 22 | 204 | 8 |
-| High | 0 | 21 | 231 |
+| ------------------ | --: | -------: | ---: |
+| Low                | 214 |       20 |    0 |
+| Moderate           |  22 |      204 |    8 |
+| High               |   0 |       21 |  231 |
 
 These metrics measure agreement with labels created by the same project assumptions. They do **not** estimate accuracy, safety, fairness, calibration, or usefulness for real students. The validation split is not an external dataset, and its records are not independent of the synthetic generation design.
 
@@ -147,20 +147,20 @@ These metrics measure agreement with labels created by the same project assumpti
 
 The explanation layer is post hoc and local. It first constructs a lower-load reference vector by applying the rule-defined baselines below to every recognized feature. Several baselines depend on the current value or weekly availability. It then restores one feature at a time to its current value while all other features remain at their reference values. The reported impact is the resulting change from the safe-reference `high` probability. It returns up to three effects with an absolute change of at least 0.002; when none qualify, it returns one neutral fallback with zero impact.
 
-| Feature | Counterfactual baseline |
-|---|---|
-| Pending tasks | At most 3 |
-| Overdue tasks | 0 |
-| Tasks due within seven days | At most 2 |
-| Exams within fourteen days | At most 1 |
-| Remaining hours | At most 1.5 times weekly availability |
+| Feature                     | Counterfactual baseline               |
+| --------------------------- | ------------------------------------- |
+| Pending tasks               | At most 3                             |
+| Overdue tasks               | 0                                     |
+| Tasks due within seven days | At most 2                             |
+| Exams within fourteen days  | At most 1                             |
+| Remaining hours             | At most 1.5 times weekly availability |
 | Hours due within seven days | At most 0.7 times weekly availability |
-| Weekly availability | At least 20 hours |
-| Load ratio | At most 0.75 |
-| Three-day deadline cluster | At most 1 |
-| High-priority tasks | At most 2 |
-| Nearest deadline | At least 7 days |
-| Average progress | At least 50 percent |
+| Weekly availability         | At least 20 hours                     |
+| Load ratio                  | At most 0.75                          |
+| Three-day deadline cluster  | At most 1                             |
+| High-priority tasks         | At most 2                             |
+| Nearest deadline            | At least 7 days                       |
+| Average progress            | At least 50 percent                   |
 
 The response also carries the full schedule's current `high` probability, but the per-feature impact is calculated against the safe-reference probability. Individual impacts are not additive and cannot reconstruct the full prediction.
 
