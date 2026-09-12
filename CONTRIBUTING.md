@@ -50,19 +50,19 @@ npm run dev
 
 ## Repository map
 
-| Path | Purpose |
-|---|---|
-| `public/` | HTML, CSS, JavaScript, and static browser assets |
-| `src/server.js` | Native HTTP server, static delivery, and API routing |
-| `src/domain/` | Validation, features, model inference, explanations, recommendations, and orchestration |
-| `src/demo.js` | Artificial demo schedule |
-| `scripts/synthetic-data.js` | Deterministic synthetic feature generator |
-| `scripts/train-model.js` | Softmax training, evaluation, and artifact serialization |
-| `models/study-balance-model.js` | Versioned model artifact |
-| `tests/` | Node.js test suite |
-| `docs/` | Technical and responsible-use documentation |
-| `MODEL_CARD.md` | Model transparency record |
-| `DATA_CARD.md` | Synthetic-data transparency record |
+| Path                            | Purpose                                                                                 |
+| ------------------------------- | --------------------------------------------------------------------------------------- |
+| `public/`                       | HTML, CSS, JavaScript, and static browser assets                                        |
+| `src/server.js`                 | Native HTTP server, static delivery, and API routing                                    |
+| `src/domain/`                   | Validation, features, model inference, explanations, recommendations, and orchestration |
+| `src/demo.js`                   | Artificial demo schedule                                                                |
+| `scripts/synthetic-data.js`     | Deterministic synthetic feature generator                                               |
+| `scripts/train-model.js`        | Softmax training, evaluation, and artifact serialization                                |
+| `models/study-balance-model.js` | Versioned model artifact                                                                |
+| `tests/`                        | Node.js test suite                                                                      |
+| `docs/`                         | Technical and responsible-use documentation                                             |
+| `MODEL_CARD.md`                 | Model transparency record                                                               |
+| `DATA_CARD.md`                  | Synthetic-data transparency record                                                      |
 
 ## Make a focused change
 
