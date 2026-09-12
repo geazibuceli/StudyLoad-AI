@@ -18,17 +18,17 @@ JSON responses use `Cache-Control: no-store`. The API has no authentication beca
 
 Every task submitted for analysis has the following fields:
 
-| Field | Type | Constraint | Meaning |
-|---|---|---|---|
-| `id` | string | Required, non-empty, unique in the request | Stable local identifier |
-| `title` | string | Required, non-empty | Human-readable task title |
-| `subject` | string | Required, non-empty | Course or subject label |
-| `type` | string | `assignment`, `exam`, `reading`, `project`, or `other` | Academic activity type |
-| `deadline` | string | Valid `YYYY-MM-DD` calendar date | Due date |
-| `estimatedHours` | number | Finite and at least `0` | Total estimated effort |
-| `progress` | number | From `0` through `100` | Completion percentage |
-| `priority` | string | `low`, `medium`, or `high` | User-selected planning priority |
-| `flexible` | boolean | Required | Whether rescheduling may be practical |
+| Field            | Type    | Constraint                                             | Meaning                               |
+| ---------------- | ------- | ------------------------------------------------------ | ------------------------------------- |
+| `id`             | string  | Required, non-empty, unique in the request             | Stable local identifier               |
+| `title`          | string  | Required, non-empty                                    | Human-readable task title             |
+| `subject`        | string  | Required, non-empty                                    | Course or subject label               |
+| `type`           | string  | `assignment`, `exam`, `reading`, `project`, or `other` | Academic activity type                |
+| `deadline`       | string  | Valid `YYYY-MM-DD` calendar date                       | Due date                              |
+| `estimatedHours` | number  | Finite and at least `0`                                | Total estimated effort                |
+| `progress`       | number  | From `0` through `100`                                 | Completion percentage                 |
+| `priority`       | string  | `low`, `medium`, or `high`                             | User-selected planning priority       |
+| `flexible`       | boolean | Required                                               | Whether rescheduling may be practical |
 
 The API interprets `progress: 100` as completed. It never infers task importance from the title or subject text.
 
@@ -125,7 +125,7 @@ curl --request POST http://localhost:3000/api/analyze \
     "deadlineCluster3Days": 1,
     "highPriorityTaskCount": 1,
     "nearestDeadlineDays": 1,
-    "averageProgress": 27.5
+    "averageProgress": 27.5,
   },
   "dailyLoad": [
     {
@@ -134,8 +134,8 @@ curl --request POST http://localhost:3000/api/analyze \
       "availableHours": 2.57,
       "loadRatio": 0.99,
       "taskIds": ["statistics-set", "algorithms-exam"],
-      "taskCount": 2
-    }
+      "taskCount": 2,
+    },
     // Six more daily entries follow in the full response.
   ],
   "risk": {
@@ -145,8 +145,8 @@ curl --request POST http://localhost:3000/api/analyze \
     "probabilities": {
       "low": 0.5271,
       "moderate": 0.4696,
-      "high": 0.0034
-    }
+      "high": 0.0034,
+    },
   },
   "explanations": [
     {
@@ -155,8 +155,8 @@ curl --request POST http://localhost:3000/api/analyze \
       "impact": 0,
       "currentValue": 0.5222,
       "baselineValue": 0.5222,
-      "method": "safe-reference local counterfactual"
-    }
+      "method": "safe-reference local counterfactual",
+    },
   ],
   "recommendations": [
     {
@@ -167,9 +167,9 @@ curl --request POST http://localhost:3000/api/analyze \
         "feature": "loadRatio",
         "operator": "<=",
         "threshold": 1,
-        "actual": 0.5222
-      }
-    }
+        "actual": 0.5222,
+      },
+    },
   ],
   "disclaimer": "StudyBalance AI estimates academic workload patterns for organizational support only. It does not diagnose stress, burnout, depression, or any health condition, and it does not replace qualified professional support.",
   "metadata": {
@@ -181,9 +181,9 @@ curl --request POST http://localhost:3000/api/analyze \
       "seed": 42,
       "sampleCount": 3600,
       "validationMacroF1": 0.9011,
-      "syntheticTrainingData": true
-    }
-  }
+      "syntheticTrainingData": true,
+    },
+  },
 }
 ```
 
@@ -191,18 +191,18 @@ This abbreviated response uses model artifact `1.0.0` and the request shown abov
 
 The response fields have these meanings:
 
-| Field | Meaning |
-|---|---|
-| `features` | Deterministic summaries derived from the schedule |
-| `dailyLoad` | Seven calendar days of planned and available hours |
-| `risk.level` | Class with the highest softmax probability |
-| `risk.score` | Bounded zero-to-100 workload index derived from class probabilities |
-| `risk.confidence` | Probability assigned to the selected class |
-| `risk.probabilities` | Softmax probabilities for all three classes |
-| `explanations` | Up to three safe-reference local counterfactuals |
-| `recommendations` | Deterministic planning actions with explicit triggers |
-| `disclaimer` | Required non-diagnostic scope statement |
-| `metadata` | Reference date, forecast horizon, and model provenance |
+| Field                | Meaning                                                             |
+| -------------------- | ------------------------------------------------------------------- |
+| `features`           | Deterministic summaries derived from the schedule                   |
+| `dailyLoad`          | Seven calendar days of planned and available hours                  |
+| `risk.level`         | Class with the highest softmax probability                          |
+| `risk.score`         | Bounded zero-to-100 workload index derived from class probabilities |
+| `risk.confidence`    | Probability assigned to the selected class                          |
+| `risk.probabilities` | Softmax probabilities for all three classes                         |
+| `explanations`       | Up to three safe-reference local counterfactuals                    |
+| `recommendations`    | Deterministic planning actions with explicit triggers               |
+| `disclaimer`         | Required non-diagnostic scope statement                             |
+| `metadata`           | Reference date, forecast horizon, and model provenance              |
 
 ## 6. Simulate adjustments
 
@@ -242,11 +242,11 @@ The simulation request contains the same schedule fields as `/api/analyze` plus 
 
 All adjustment fields are optional:
 
-| Field | Type | Behavior |
-|---|---|---|
-| `weeklyAvailableHours` | number | Temporarily replaces baseline availability; must be greater than `0` and no greater than `168` |
-| `taskUpdates` | array | Partially updates known tasks; each entry requires a valid existing `id` |
-| `removeTaskIds` | string array | Temporarily removes known tasks from the simulated copy |
+| Field                  | Type         | Behavior                                                                                       |
+| ---------------------- | ------------ | ---------------------------------------------------------------------------------------------- |
+| `weeklyAvailableHours` | number       | Temporarily replaces baseline availability; must be greater than `0` and no greater than `168` |
+| `taskUpdates`          | array        | Partially updates known tasks; each entry requires a valid existing `id`                       |
+| `removeTaskIds`        | string array | Temporarily removes known tasks from the simulated copy                                        |
 
 A task cannot be updated and removed in the same simulation. Duplicate task updates and unknown identifiers are rejected.
 
@@ -254,15 +254,15 @@ The response contains:
 
 ```jsonc
 {
-  "baseline": { /* complete analysis response */ },
-  "simulated": { /* complete analysis response */ },
+  "baseline": {/* complete analysis response */},
+  "simulated": {/* complete analysis response */},
   "comparison": {
     "riskScoreDelta": -9,
     "highRiskProbabilityDelta": -0.0012,
     "peakDailyHoursDelta": -0.48,
     "loadRatioDelta": -0.1818,
     "levelChanged": false,
-    "improved": true
+    "improved": true,
   },
   "appliedAdjustments": {
     "taskUpdates": [
@@ -275,13 +275,13 @@ The response contains:
         "estimatedHours": 8,
         "progress": 40,
         "priority": "high",
-        "flexible": false
-      }
+        "flexible": false,
+      },
     ],
     "removeTaskIds": [],
-    "weeklyAvailableHours": 22
+    "weeklyAvailableHours": 22,
   },
-  "disclaimer": "StudyBalance AI estimates academic workload patterns for organizational support only. It does not diagnose stress, burnout, depression, or any health condition, and it does not replace qualified professional support."
+  "disclaimer": "StudyBalance AI estimates academic workload patterns for organizational support only. It does not diagnose stress, burnout, depression, or any health condition, and it does not replace qualified professional support.",
 }
 ```
 
@@ -297,13 +297,13 @@ Errors use a bounded JSON shape and do not include a stack trace:
 }
 ```
 
-| Status | Meaning |
-|---|---|
-| `400 Bad Request` | Malformed JSON or invalid schedule input |
-| `404 Not Found` | Unknown API path or static resource |
-| `413 Payload Too Large` | Request body exceeds 1 MB |
-| `415 Unsupported Media Type` | A POST endpoint did not receive `application/json` |
-| `500 Internal Server Error` | Unexpected analysis failure; internal details are hidden |
+| Status                       | Meaning                                                  |
+| ---------------------------- | -------------------------------------------------------- |
+| `400 Bad Request`            | Malformed JSON or invalid schedule input                 |
+| `404 Not Found`              | Unknown API path or static resource                      |
+| `413 Payload Too Large`      | Request body exceeds 1 MB                                |
+| `415 Unsupported Media Type` | A POST endpoint did not receive `application/json`       |
+| `500 Internal Server Error`  | Unexpected analysis failure; internal details are hidden |
 
 Callers must not use error text as a stable machine-readable contract.
 
@@ -312,10 +312,7 @@ Callers must not use error text as a stable machine-readable contract.
 Code running inside the Node.js project can bypass HTTP and call the pure domain operations:
 
 ```js
-import {
-  analyzeSchedule,
-  simulateRebalance,
-} from "./src/domain/analyzer.js";
+import { analyzeSchedule, simulateRebalance } from "./src/domain/analyzer.js";
 
 const analysis = analyzeSchedule(schedule);
 const simulation = simulateRebalance({
