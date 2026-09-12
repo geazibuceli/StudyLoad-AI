@@ -7,7 +7,7 @@ import {
   createFeatureSchedule,
   createLightSchedule,
   createOverloadedSchedule,
-  createTask
+  createTask,
 } from "./fixtures.js";
 
 const RISK_LEVELS = new Set(["low", "moderate", "high"]);
@@ -35,7 +35,7 @@ function assertAnalysisShape(result) {
 
   const probabilityTotal = Object.values(result.risk.probabilities).reduce(
     (sum, probability) => sum + probability,
-    0
+    0,
   );
   assert.ok(Math.abs(probabilityTotal - 1) < 0.02);
 
@@ -121,13 +121,13 @@ describe("analyzeSchedule", () => {
       { ...valid, referenceDate: "not-a-date" },
       { ...valid, tasks: [createTask({ progress: 101 })] },
       { ...valid, tasks: [createTask({ estimatedHours: -1 })] },
-      { ...valid, tasks: [createTask({ deadline: "2026-02-30" })] }
+      { ...valid, tasks: [createTask({ deadline: "2026-02-30" })] },
     ];
 
     for (const input of invalidInputs) {
       assert.throws(
         () => analyzeSchedule(input),
-        (error) => error instanceof TypeError || error instanceof RangeError
+        (error) => error instanceof TypeError || error instanceof RangeError,
       );
     }
   });
@@ -141,8 +141,8 @@ describe("simulateRebalance", () => {
       ...schedule,
       adjustments: {
         weeklyAvailableHours: 28,
-        taskUpdates: schedule.tasks.map((task) => ({ id: task.id, progress: 80 }))
-      }
+        taskUpdates: schedule.tasks.map((task) => ({ id: task.id, progress: 80 })),
+      },
     });
 
     assert.deepEqual(schedule, snapshot);
