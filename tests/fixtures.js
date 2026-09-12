@@ -11,7 +11,7 @@ export function createTask(overrides = {}) {
     progress: 0,
     priority: "medium",
     flexible: true,
-    ...overrides
+    ...overrides,
   };
 }
 
@@ -26,20 +26,48 @@ export function createLightSchedule() {
         type: "reading",
         estimatedHours: 2,
         progress: 25,
-        priority: "low"
-      })
-    ]
+        priority: "low",
+      }),
+    ],
   };
 }
 
 export function createOverloadedSchedule() {
   const taskData = [
     ["exam-algorithms", "Prepare for the algorithms exam", "Algorithms", "exam", "2026-03-03", 14],
-    ["project-ai", "Finish the AI prototype", "Artificial Intelligence", "project", "2026-03-03", 16],
-    ["report-networks", "Write the networks report", "Computer Networks", "assignment", "2026-03-04", 11],
+    [
+      "project-ai",
+      "Finish the AI prototype",
+      "Artificial Intelligence",
+      "project",
+      "2026-03-03",
+      16,
+    ],
+    [
+      "report-networks",
+      "Write the networks report",
+      "Computer Networks",
+      "assignment",
+      "2026-03-04",
+      11,
+    ],
     ["exam-statistics", "Prepare for the statistics exam", "Statistics", "exam", "2026-03-04", 13],
-    ["project-databases", "Complete the database project", "Databases", "project", "2026-03-05", 15],
-    ["reading-ethics", "Study the ethics materials", "Technology Ethics", "reading", "2026-03-05", 9]
+    [
+      "project-databases",
+      "Complete the database project",
+      "Databases",
+      "project",
+      "2026-03-05",
+      15,
+    ],
+    [
+      "reading-ethics",
+      "Study the ethics materials",
+      "Technology Ethics",
+      "reading",
+      "2026-03-05",
+      9,
+    ],
   ];
 
   return {
@@ -54,9 +82,9 @@ export function createOverloadedSchedule() {
         deadline,
         estimatedHours,
         priority: "high",
-        flexible: type !== "exam"
-      })
-    )
+        flexible: type !== "exam",
+      }),
+    ),
   };
 }
 
@@ -71,7 +99,7 @@ export function createFeatureSchedule() {
         deadline: "2026-03-01",
         estimatedHours: 5,
         progress: 20,
-        priority: "high"
+        priority: "high",
       }),
       createTask({
         id: "due-today",
@@ -80,14 +108,14 @@ export function createFeatureSchedule() {
         deadline: "2026-03-02",
         estimatedHours: 4,
         progress: 50,
-        flexible: false
+        flexible: false,
       }),
       createTask({
         id: "week-boundary",
         title: "Complete the weekly exercise set",
         deadline: "2026-03-08",
         estimatedHours: 6,
-        progress: 0
+        progress: 0,
       }),
       createTask({
         id: "upcoming-exam",
@@ -98,7 +126,7 @@ export function createFeatureSchedule() {
         estimatedHours: 8,
         progress: 10,
         priority: "high",
-        flexible: false
+        flexible: false,
       }),
       createTask({
         id: "completed-reading",
@@ -107,8 +135,8 @@ export function createFeatureSchedule() {
         deadline: "2026-03-02",
         estimatedHours: 3,
         progress: 100,
-        priority: "low"
-      })
-    ]
+        priority: "low",
+      }),
+    ],
   };
 }
