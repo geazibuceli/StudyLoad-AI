@@ -145,16 +145,16 @@ docs/                           Technical and responsible-use documentation
 
 ## Documentation
 
-| Document | Purpose |
-|---|---|
-| [User Guide](docs/USER_GUIDE.md) | Operate the MVP and interpret results safely |
-| [Architecture](docs/ARCHITECTURE.md) | Understand components, data flows, and trust boundaries |
-| [Methodology](docs/METHODOLOGY.md) | Review the problem framing, model, counterfactuals, and evaluation approach |
-| [API Reference](docs/API.md) | Integrate with the native HTTP analysis endpoints |
-| [Privacy and Ethics](docs/PRIVACY_AND_ETHICS.md) | Review data handling, risks, safeguards, and prohibited uses |
-| [Model Card](MODEL_CARD.md) | Inspect model capabilities, intended uses, and limitations |
-| [Data Card](DATA_CARD.md) | Inspect synthetic data provenance, composition, and limitations |
-| [Research References](docs/REFERENCES.md) | Find the research used to contextualize the project |
+| Document                                         | Purpose                                                                     |
+| ------------------------------------------------ | --------------------------------------------------------------------------- |
+| [User Guide](docs/USER_GUIDE.md)                 | Operate the MVP and interpret results safely                                |
+| [Architecture](docs/ARCHITECTURE.md)             | Understand components, data flows, and trust boundaries                     |
+| [Methodology](docs/METHODOLOGY.md)               | Review the problem framing, model, counterfactuals, and evaluation approach |
+| [API Reference](docs/API.md)                     | Integrate with the native HTTP analysis endpoints                           |
+| [Privacy and Ethics](docs/PRIVACY_AND_ETHICS.md) | Review data handling, risks, safeguards, and prohibited uses                |
+| [Model Card](MODEL_CARD.md)                      | Inspect model capabilities, intended uses, and limitations                  |
+| [Data Card](DATA_CARD.md)                        | Inspect synthetic data provenance, composition, and limitations             |
+| [Research References](docs/REFERENCES.md)        | Find the research used to contextualize the project                         |
 
 ## Known limitations
 
