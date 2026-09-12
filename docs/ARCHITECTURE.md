@@ -94,27 +94,27 @@ Neutralizing private display text is a behavior of the bundled web client, not a
 
 The domain is organized as small ESM modules under `src/domain`:
 
-| Module | Responsibility |
-|---|---|
-| `date.js` | Date normalization and seven-day window calculations |
-| `validation.js` | Domain-level input validation and normalization |
-| `model-schema.js` | Feature and model artifact compatibility checks |
-| `features.js` | Deterministic schedule-to-feature transformation |
-| `model.js` | Softmax inference and probability handling |
-| `explanations.js` | Observable factors and counterfactual comparisons |
-| `recommendations.js` | Deterministic preventive planning rules |
-| `analyzer.js` | Analysis and simulation orchestration |
+| Module               | Responsibility                                       |
+| -------------------- | ---------------------------------------------------- |
+| `date.js`            | Date normalization and seven-day window calculations |
+| `validation.js`      | Domain-level input validation and normalization      |
+| `model-schema.js`    | Feature and model artifact compatibility checks      |
+| `features.js`        | Deterministic schedule-to-feature transformation     |
+| `model.js`           | Softmax inference and probability handling           |
+| `explanations.js`    | Observable factors and counterfactual comparisons    |
+| `recommendations.js` | Deterministic preventive planning rules              |
+| `analyzer.js`        | Analysis and simulation orchestration                |
 
 The public domain operations are conceptually:
 
 ```js
-analyzeSchedule({ tasks, weeklyAvailableHours, referenceDate })
+analyzeSchedule({ tasks, weeklyAvailableHours, referenceDate });
 simulateRebalance({
   tasks,
   weeklyAvailableHours,
   referenceDate,
-  adjustments
-})
+  adjustments,
+});
 ```
 
 The analyzer returns data rather than causing persistence or network side effects. This makes the central behavior testable independently of HTTP and the browser.
@@ -167,18 +167,18 @@ Comparison deltas are calculated as `simulated - baseline`; a lower simulated sc
 
 ## 6. Data lifecycle
 
-| Stage | Location | Persistence | Notes |
-|---|---|---|---|
-| Task entry | Browser memory | Temporary | Controlled by the user |
-| Planner state | Browser `localStorage` | Until cleared | No automatic backup or encryption |
-| Planner view preferences | Browser `localStorage` | Until cleared | Search text, sort order, and filter selection remain local |
-| Selected day and undo snapshot | Browser memory | UI lifetime or next applicable change | Selected-day detail is ephemeral; undo holds one planner snapshot |
-| Scenario Lab draft | Browser memory | Until reset, apply, or page lifetime ends | Does not modify the planner before explicit apply |
-| Focus sequence and timer | Browser memory | Page lifetime | Bounded local aid; not saved or scored |
-| Analysis request | Browser and HTTP process memory | Request lifetime | Bundled client neutralizes task and course names; direct clients control their payloads |
-| Analysis result | Browser memory | UI lifetime | Contains model-derived output |
-| Synthetic training data | Training process | Reproducibly generated | Represents no real person |
-| Model artifact | Repository and server memory | Versioned | Contains coefficients and metadata, not student records |
+| Stage                          | Location                        | Persistence                               | Notes                                                                                   |
+| ------------------------------ | ------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------- |
+| Task entry                     | Browser memory                  | Temporary                                 | Controlled by the user                                                                  |
+| Planner state                  | Browser `localStorage`          | Until cleared                             | No automatic backup or encryption                                                       |
+| Planner view preferences       | Browser `localStorage`          | Until cleared                             | Search text, sort order, and filter selection remain local                              |
+| Selected day and undo snapshot | Browser memory                  | UI lifetime or next applicable change     | Selected-day detail is ephemeral; undo holds one planner snapshot                       |
+| Scenario Lab draft             | Browser memory                  | Until reset, apply, or page lifetime ends | Does not modify the planner before explicit apply                                       |
+| Focus sequence and timer       | Browser memory                  | Page lifetime                             | Bounded local aid; not saved or scored                                                  |
+| Analysis request               | Browser and HTTP process memory | Request lifetime                          | Bundled client neutralizes task and course names; direct clients control their payloads |
+| Analysis result                | Browser memory                  | UI lifetime                               | Contains model-derived output                                                           |
+| Synthetic training data        | Training process                | Reproducibly generated                    | Represents no real person                                                               |
+| Model artifact                 | Repository and server memory    | Versioned                                 | Contains coefficients and metadata, not student records                                 |
 
 ## 7. Trust boundaries and threats
 
