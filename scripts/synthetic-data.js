@@ -7,7 +7,7 @@ export function createSeededRandom(seed = DEFAULT_SYNTHETIC_SEED) {
   let state = seed >>> 0;
 
   return function random() {
-    state += 0x6D2B79F5;
+    state += 0x6d2b79f5;
     let value = state;
     value = Math.imul(value ^ (value >>> 15), value | 1);
     value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
@@ -16,7 +16,7 @@ export function createSeededRandom(seed = DEFAULT_SYNTHETIC_SEED) {
 }
 
 function randomBetween(random, minimum, maximum) {
-  return minimum + ((maximum - minimum) * random());
+  return minimum + (maximum - minimum) * random();
 }
 
 function randomInteger(random, minimum, maximum) {
@@ -70,17 +70,9 @@ function generateFeatureRow(random) {
   }
 
   const averageProgress = round(randomBetween(random, 0, 88), 2);
-  const overdueTaskCount = binomial(
-    random,
-    pendingTaskCount,
-    randomBetween(random, 0, 0.3),
-  );
+  const overdueTaskCount = binomial(random, pendingTaskCount, randomBetween(random, 0, 0.3));
   const nonOverdueCount = pendingTaskCount - overdueTaskCount;
-  const dueWithin7DaysCount = binomial(
-    random,
-    nonOverdueCount,
-    randomBetween(random, 0.08, 0.72),
-  );
+  const dueWithin7DaysCount = binomial(random, nonOverdueCount, randomBetween(random, 0.08, 0.72));
   const examWithin14DaysCount = binomial(
     random,
     nonOverdueCount,
@@ -97,29 +89,28 @@ function generateFeatureRow(random) {
     randomInteger(random, 0, Math.max(1, dueWithin7DaysCount + overdueTaskCount)),
   );
   const baseRemainingHours = pendingTaskCount * randomBetween(random, 1.2, 7.2);
-  const progressAdjustment = 1 - (averageProgress / 160);
+  const progressAdjustment = 1 - averageProgress / 160;
   const remainingHours = round(baseRemainingHours * progressAdjustment, 2);
-  const dueWithin7DaysHours = round(Math.min(
-    remainingHours,
-    dueWithin7DaysCount * randomBetween(random, 1.2, 8),
-  ), 2);
+  const dueWithin7DaysHours = round(
+    Math.min(remainingHours, dueWithin7DaysCount * randomBetween(random, 1.2, 8)),
+    2,
+  );
   const overdueHours = Math.min(
     Math.max(0, remainingHours - dueWithin7DaysHours),
     overdueTaskCount * randomBetween(random, 1, 7),
   );
-  const pacedFutureHours = Math.max(
-    0,
-    remainingHours - dueWithin7DaysHours - overdueHours,
-  ) * randomBetween(random, 0.05, 0.3);
+  const pacedFutureHours =
+    Math.max(0, remainingHours - dueWithin7DaysHours - overdueHours) *
+    randomBetween(random, 0.05, 0.3);
   const loadRatio = round(
-    (dueWithin7DaysHours + overdueHours + pacedFutureHours)
-      / weeklyAvailableHours,
+    (dueWithin7DaysHours + overdueHours + pacedFutureHours) / weeklyAvailableHours,
   );
-  const nearestDeadlineDays = overdueTaskCount > 0
-    ? 0
-    : dueWithin7DaysCount > 0
-      ? randomInteger(random, 0, 6)
-      : randomInteger(random, 7, 30);
+  const nearestDeadlineDays =
+    overdueTaskCount > 0
+      ? 0
+      : dueWithin7DaysCount > 0
+        ? randomInteger(random, 0, 6)
+        : randomInteger(random, 7, 30);
 
   return {
     pendingTaskCount,
@@ -138,18 +129,17 @@ function generateFeatureRow(random) {
 }
 
 function syntheticPressureScore(features, random) {
-  const score = (
-    (26 * clamp(features.loadRatio, 0, 2.5))
-    + (4.8 * features.overdueTaskCount)
-    + (2.2 * features.dueWithin7DaysCount)
-    + (3.2 * features.examWithin14DaysCount)
-    + (3 * Math.max(0, features.deadlineCluster3Days - 1))
-    + (1.4 * features.highPriorityTaskCount)
-    + (0.06 * features.remainingHours)
-    - (0.11 * features.averageProgress)
-    - (0.3 * Math.min(features.nearestDeadlineDays, 14))
-    + (gaussianNoise(random) * 4.5)
-  );
+  const score =
+    26 * clamp(features.loadRatio, 0, 2.5) +
+    4.8 * features.overdueTaskCount +
+    2.2 * features.dueWithin7DaysCount +
+    3.2 * features.examWithin14DaysCount +
+    3 * Math.max(0, features.deadlineCluster3Days - 1) +
+    1.4 * features.highPriorityTaskCount +
+    0.06 * features.remainingHours -
+    0.11 * features.averageProgress -
+    0.3 * Math.min(features.nearestDeadlineDays, 14) +
+    gaussianNoise(random) * 4.5;
 
   return score;
 }
@@ -174,10 +164,12 @@ export function generateSyntheticDataset({
 
   const random = createSeededRandom(seed);
   const baseQuota = Math.floor(sampleCount / RISK_LEVELS.length);
-  const quotas = Object.fromEntries(RISK_LEVELS.map((label, index) => [
-    label,
-    baseQuota + (index < sampleCount % RISK_LEVELS.length ? 1 : 0),
-  ]));
+  const quotas = Object.fromEntries(
+    RISK_LEVELS.map((label, index) => [
+      label,
+      baseQuota + (index < sampleCount % RISK_LEVELS.length ? 1 : 0),
+    ]),
+  );
   const classCounts = Object.fromEntries(RISK_LEVELS.map((label) => [label, 0]));
   const records = [];
   let attempts = 0;
@@ -193,11 +185,13 @@ export function generateSyntheticDataset({
       continue;
     }
 
-    records.push(Object.freeze({
-      features: Object.freeze(features),
-      label,
-      latentScore: round(latentScore),
-    }));
+    records.push(
+      Object.freeze({
+        features: Object.freeze(features),
+        label,
+        latentScore: round(latentScore),
+      }),
+    );
     classCounts[label] += 1;
   }
 
