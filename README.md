@@ -26,7 +26,7 @@ StudyBalance AI explores that idea through three principles:
 
 ## MVP features
 
-- **Interactive task planner:** create, update, complete, search, sort, filter, and remove academic tasks; inline progress changes save immediately and refresh the forecast.
+- **Interactive task planner:** create, update, complete, search, sort, filter, and remove academic tasks; inline progress changes save immediately and refresh the forecast. The planner also supports contextual empty-state recovery, clearer reset actions for search and filters, and keyboard shortcuts such as `/` for quick search and `Esc` to reset search state.
 - **Seven-day explorer:** select a day to inspect the tasks contributing modeled effort, or drag a flexible task onto a day to reschedule its deadline with a one-level undo.
 - **Weekly forecast:** estimate `low`, `moderate`, or `high` overload from the next seven days.
 - **Explanations:** identify influential schedule factors and show how controlled changes affect the model output.
@@ -76,7 +76,7 @@ The Compose service publishes `${PORT:-3000}` on the host and is intended for de
 
 ## Use it in five steps
 
-1. Add academic tasks, then search, sort, filter, or update progress directly in the planner.
+1. Add academic tasks, then search, sort, filter, or update progress directly in the planner. Empty-state actions make it easier to recover from a search or filter dead end, and the planner surfaces clearer options such as clearing search, showing open tasks, or adding another task.
 2. Select a day in the seven-day explorer to inspect its modeled effort. Drag a flexible task onto a day only when changing its recorded deadline is appropriate.
 3. Review the forecast, probabilities, listed factors, and preventive action plan. No single factor represents a health state.
 4. Use Scenario Lab to preview capacity or flexible-deadline changes. Its deltas are `simulated - baseline`; nothing is saved until you select **Apply this scenario**.
