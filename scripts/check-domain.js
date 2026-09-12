@@ -47,8 +47,10 @@ assert.ok(highLoad.explanations.length >= 1);
 assert.ok(highLoad.explanations.some((item) => item.impact > 0));
 assert.ok(highLoad.recommendations.every((item) => item.trigger.feature));
 
-const probabilityTotal = Object.values(highLoad.risk.probabilities)
-  .reduce((total, value) => total + value, 0);
+const probabilityTotal = Object.values(highLoad.risk.probabilities).reduce(
+  (total, value) => total + value,
+  0,
+);
 assert.ok(Math.abs(probabilityTotal - 1) < 0.001);
 
 assert.deepEqual(analyzeSchedule(highLoadInput), highLoad);
@@ -70,18 +72,25 @@ assert.equal(simulation.appliedAdjustments.weeklyAvailableHours, 20);
 assert.equal(simulation.disclaimer, NON_DIAGNOSTIC_DISCLAIMER);
 
 assert.throws(
-  () => analyzeSchedule({
-    tasks: [{ ...busyTask(0), deadline: "2026-02-30" }],
-    weeklyAvailableHours: 10,
-    referenceDate,
-  }),
+  () =>
+    analyzeSchedule({
+      tasks: [{ ...busyTask(0), deadline: "2026-02-30" }],
+      weeklyAvailableHours: 10,
+      referenceDate,
+    }),
   /valid calendar date/i,
 );
 
-console.log(JSON.stringify({
-  status: "ok",
-  lowLoadRisk: lowLoad.risk,
-  highLoadRisk: highLoad.risk,
-  simulatedRisk: simulation.simulated.risk,
-  model: highLoad.metadata.model,
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      status: "ok",
+      lowLoadRisk: lowLoad.risk,
+      highLoadRisk: highLoad.risk,
+      simulatedRisk: simulation.simulated.risk,
+      model: highLoad.metadata.model,
+    },
+    null,
+    2,
+  ),
+);
