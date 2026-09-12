@@ -41,26 +41,18 @@ export function explainPrediction(features, risk, limit = 3) {
   const safeReference = Object.fromEntries(
     Object.entries(features).map(([featureName, value]) => {
       const baselineFactory = SAFE_BASELINES[featureName];
-      return [
-        featureName,
-        baselineFactory ? baselineFactory(value, features) : value,
-      ];
+      return [featureName, baselineFactory ? baselineFactory(value, features) : value];
     }),
   );
   const referenceRisk = predictRisk(safeReference);
-  const candidates = Object.entries(SAFE_BASELINES).map(([
-    featureName,
-    baselineFactory,
-  ]) => {
+  const candidates = Object.entries(SAFE_BASELINES).map(([featureName, baselineFactory]) => {
     const baselineValue = baselineFactory(features[featureName], features);
     const counterfactualFeatures = {
       ...safeReference,
       [featureName]: features[featureName],
     };
     const counterfactualRisk = predictRisk(counterfactualFeatures);
-    const impact = (
-      counterfactualRisk.probabilities.high - referenceRisk.probabilities.high
-    );
+    const impact = counterfactualRisk.probabilities.high - referenceRisk.probabilities.high;
 
     return {
       feature: featureName,
@@ -86,17 +78,19 @@ export function explainPrediction(features, risk, limit = 3) {
     return meaningful;
   }
 
-  return [{
-    feature: "loadRatio",
-    label: FEATURE_LABELS.loadRatio,
-    direction: "neutral",
-    impact: 0,
-    impactPoints: 0,
-    currentValue: features.loadRatio,
-    baselineValue: features.loadRatio,
-    currentHighProbability: risk.probabilities.high,
-    referenceHighProbability: risk.probabilities.high,
-    message: "No single academic workload factor materially changed the current estimate.",
-    method: "safe-reference local counterfactual",
-  }];
+  return [
+    {
+      feature: "loadRatio",
+      label: FEATURE_LABELS.loadRatio,
+      direction: "neutral",
+      impact: 0,
+      impactPoints: 0,
+      currentValue: features.loadRatio,
+      baselineValue: features.loadRatio,
+      currentHighProbability: risk.probabilities.high,
+      referenceHighProbability: risk.probabilities.high,
+      message: "No single academic workload factor materially changed the current estimate.",
+      method: "safe-reference local counterfactual",
+    },
+  ];
 }
