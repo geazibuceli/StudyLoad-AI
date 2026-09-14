@@ -41,20 +41,20 @@ The generator creates features directly. It does not first create a complete set
 
 ## Feature schema
 
-| Feature                 | Synthetic generation                                                                                       |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `pendingTaskCount`      | Integer from 0 through 20                                                                                  |
-| `overdueTaskCount`      | Binomial draw bounded by pending tasks, using a sampled probability from 0 up to, but not including, 0.30  |
-| `dueWithin7DaysCount`   | Binomial draw over non-overdue tasks, using a sampled probability from 0.08 up to, but not including, 0.72 |
-| `examWithin14DaysCount` | Binomial draw over non-overdue tasks, using a sampled probability from 0.02 up to, but not including, 0.28 |
-| `remainingHours`        | Pending task count multiplied by sampled effort and adjusted by average progress                           |
-| `dueWithin7DaysHours`   | Bounded by remaining hours and scaled by near-term task count                                              |
-| `weeklyAvailableHours`  | Continuous draw from 6 up to, but not including, 46 hours                                                  |
-| `loadRatio`             | Constructed near-term, overdue, and paced future hours divided by availability                             |
-| `deadlineCluster3Days`  | Integer bounded by pending, near-term, and overdue task counts                                             |
-| `highPriorityTaskCount` | Binomial draw over pending tasks, using a sampled probability from 0.10 up to, but not including, 0.58     |
-| `nearestDeadlineDays`   | 0 when overdue work exists; otherwise 0 through 6 for near-term work or 7 through 30                       |
-| `averageProgress`       | Continuous draw from 0 up to, but not including, 88 percent when work is pending                           |
+| Feature                 | Synthetic generation                                                                                                 |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `pendingTaskCount`      | Integer from 0 through 20                                                                                            |
+| `overdueTaskCount`      | Integer drawn from the selected profile's range, capped at pending tasks                                             |
+| `dueWithin7DaysCount`   | Integer drawn from the selected profile's range, capped at non-overdue tasks                                         |
+| `examWithin14DaysCount` | Integer drawn from the selected profile's range, capped at non-overdue tasks remaining after the near-term count     |
+| `remainingHours`        | Pending task count multiplied by sampled effort and adjusted by average progress                                     |
+| `dueWithin7DaysHours`   | Bounded by remaining hours and scaled by near-term task count                                                        |
+| `weeklyAvailableHours`  | Continuous draw from 6 up to, but not including, 46 hours                                                            |
+| `loadRatio`             | Constructed near-term, overdue, and paced future hours divided by availability, then clipped to the profile's bounds |
+| `deadlineCluster3Days`  | Integer bounded by pending, near-term, and overdue task counts                                                       |
+| `highPriorityTaskCount` | Integer drawn from the selected profile's range, capped at pending tasks                                             |
+| `nearestDeadlineDays`   | 0 when overdue work exists; otherwise 0 through 6 for near-term work or 7 through 30                                 |
+| `averageProgress`       | Continuous draw from the selected profile's range: 70–100, 35–80, or 0–55 percent, rounded to two decimals           |
 
 When `pendingTaskCount` is zero, dependent workload features are zero, `nearestDeadlineDays` is 30, and `averageProgress` is 100.
 
@@ -62,7 +62,17 @@ The exact generator implementation is authoritative. Rounded prose ranges in thi
 
 ## Label construction
 
-The generator computes a latent score:
+The current generator selects a class label first, then draws features from that class's configuration in `RISK_PROFILE_CONFIG`. Selected profile bounds are:
+
+| Generation profile | Pending tasks | Weekly available hours | Average progress (%) | Load ratio bounds |
+| ------------------ | ------------: | ---------------------: | -------------------: | ----------------: |
+| `low`              |           0–6 |                  18–46 |               70–100 |         0.10–0.95 |
+| `moderate`         |          4–12 |                  10–34 |                35–80 |         0.45–1.50 |
+| `high`             |          8–20 |                   6–28 |                 0–55 |         1.10–2.50 |
+
+Integer bounds are inclusive. Continuous sampling excludes the upper bound before rounding; rounding can reach it. The zero-pending-task case overrides dependent fields as described above. Other count and effort ranges also depend on the selected profile; see the generator for the complete configuration.
+
+Each record retains the selected profile as its label. The generator also computes an auxiliary latent score:
 
 $$
 \begin{aligned}
@@ -81,31 +91,25 @@ $$
 
 where \(\epsilon\) is a standard Gaussian value produced by the deterministic seeded pseudorandom stream.
 
-Labels are assigned as follows:
+This auxiliary score is stored on the synthetic record but is not an input to the classifier and does not determine its target label. The score thresholds of 20 and 52 belonged to the earlier generator, before commit `871dbb1`.
 
-| Label      | Latent score rule                    |
-| ---------- | ------------------------------------ |
-| `low`      | Below 20                             |
-| `moderate` | From 20 up to, but not including, 52 |
-| `high`     | 52 or higher                         |
-
-The score and thresholds are project assumptions created for demonstration. They are not derived from a validated questionnaire, student outcome, health measure, or expert annotation.
+The generator's `labelRule` metadata, copied into the saved artifact's `training.labels`, describes this profile assignment and the auxiliary role of the latent score. The current profiles and auxiliary score are project assumptions, with no validated questionnaire, student outcome, health measure, or expert annotation as their source.
 
 ## Sampling and balancing
 
-The generator uses a seeded Mulberry32-style pseudorandom function and Box-Muller Gaussian noise. It proposes records sequentially and accepts them only while the proposed label's quota remains open. Generation stops when each class contains 1,200 records.
+The generator uses a seeded Mulberry32-style pseudorandom function and Box-Muller Gaussian noise for the auxiliary score. It iterates through `low`, `moderate`, and `high`, generating each profile's quota directly: 1,200 records per class at the default sample count. The current generator does not use rejection sampling.
 
-This rejection process creates exact class balance but changes the natural frequency and conditional distribution of accepted examples. The 1:1:1 balance must not be interpreted as the prevalence of workload levels in any student population.
+These quotas create exact class balance by construction. The 1:1:1 balance must not be interpreted as the prevalence of workload levels in any student population.
 
 ## Training and validation split
 
-The 3,600 accepted records are shuffled with a second deterministic stream initialized with seed `43`. The first 80 percent form the training split and the remaining 20 percent form the synthetic validation split.
+The 3,600 generated records are shuffled with a second deterministic stream initialized with seed `43`. The first 80 percent form the training split and the remaining 20 percent form the synthetic validation split.
 
 | Split              | Records |   Low | Moderate |  High |
 | ------------------ | ------: | ----: | -------: | ----: |
 | Full generated set |   3,600 | 1,200 |    1,200 | 1,200 |
-| Training           |   2,880 |   966 |      966 |   948 |
-| Validation         |     720 |   234 |      234 |   252 |
+| Training           |   2,880 |   953 |      979 |   948 |
+| Validation         |     720 |   247 |      221 |   252 |
 
 Validation class counts are obtained from the row totals of the committed confusion matrix; training counts are the corresponding remainder from the balanced full set. Normalization means and population standard deviations are calculated from the training split only.
 
@@ -139,7 +143,7 @@ The generator encodes hand-selected ranges and relationships. It has no institut
 
 ### Constructed-label circularity
 
-The target is calculated from the feature families used to train the model. Validation primarily measures how well the model approximates the synthetic scoring function.
+The target label selects the profile used to generate the features. Validation primarily measures how well the model distinguishes those constructed distributions; it does not evaluate an independently observed outcome or the auxiliary scoring function.
 
 ### Feature inconsistency risk
 

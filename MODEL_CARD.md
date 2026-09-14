@@ -104,13 +104,9 @@ The training pipeline generates 3,600 artificial feature records with seed `42`,
 | Synthetic validation |     720 |
 | Total                |   3,600 |
 
-Synthetic labels come from a hand-designed latent workload score plus deterministic seeded Gaussian noise:
+Synthetic labels identify the hand-designed generation profile (`low`, `moderate`, or `high`) selected before sampling the features. Each profile has its own ranges for task counts, effort, progress, availability, and load ratio. The generator fills each class quota directly. It also records a latent workload score with seeded Gaussian noise, but that score does not assign or filter the current labels.
 
-- `low`: latent score below 20;
-- `moderate`: latent score from 20 up to, but not including, 52;
-- `high`: latent score of 52 or higher.
-
-Class balancing uses rejection sampling until each quota is filled. See [DATA_CARD.md](DATA_CARD.md) for the complete generation formula and distribution limitations.
+See [DATA_CARD.md](DATA_CARD.md) for the profile ranges, auxiliary score, label metadata, and distribution limitations.
 
 ## Training procedure
 
@@ -130,16 +126,20 @@ The training process is deterministic for the same supported runtime and source 
 
 | Metric   | Training split | Validation split |
 | -------- | -------------: | ---------------: |
-| Accuracy |         0.9177 |           0.9014 |
-| Macro F1 |         0.9183 |           0.9011 |
+| Accuracy |         0.9740 |           0.9750 |
+| Macro F1 |         0.9741 |           0.9744 |
 
 Validation confusion matrix, with rows as synthetic true labels and columns as predicted labels:
 
 | Actual \ Predicted | Low | Moderate | High |
 | ------------------ | --: | -------: | ---: |
-| Low                | 214 |       20 |    0 |
-| Moderate           |  22 |      204 |    8 |
-| High               |   0 |       21 |  231 |
+| Low                | 244 |        3 |    0 |
+| Moderate           |   7 |      213 |    1 |
+| High               |   0 |        7 |  245 |
+
+The validation accuracy is `(244 + 213 + 245) / 720 = 0.9750` (**97.50%**). Metrics are rounded to four decimal places and match `training` in [the saved artifact](models/study-balance-model.js). Running `node scripts/train-model.js --check` on Node.js `v24.11.0` reproduced that artifact byte for byte.
+
+The previously documented validation accuracy of **90.14%** belongs to the artifact before commit `871dbb1`. That commit changed the synthetic generator to use class-specific profiles and regenerated the model, while retaining artifact version `1.0.0` and the fixed training timestamp. Cite the generator/source revision together with these metrics. The two accuracy values use different generated datasets and label construction, so their difference is not a controlled improvement on the same validation benchmark.
 
 These metrics measure agreement with labels created by the same project assumptions. They do **not** estimate accuracy, safety, fairness, calibration, or usefulness for real students. The validation split is not an external dataset, and its records are not independent of the synthetic generation design.
 
@@ -176,7 +176,7 @@ This separation is intentional: a probability model does not decide what a stude
 
 ### Synthetic target circularity
 
-The labels are functions of the same feature families presented to the model. Strong synthetic performance therefore shows that softmax regression approximates the project's hand-designed rule, not that it discovered an external phenomenon.
+The selected label determines the feature-generation profile. Strong synthetic performance therefore measures how well softmax regression distinguishes the project's constructed profile distributions. It does not establish that those distributions represent an external phenomenon.
 
 ### Feature-level generation gap
 

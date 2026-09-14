@@ -72,10 +72,10 @@ const modelArtifact = {
       [0, 7, 245],
     ],
     labels: {
-      low: "latent score below 20",
-      moderate: "latent score from 20 up to, but not including, 52",
-      high: "latent score of 52 or higher",
-      note: "The latent score combines academic workload features with deterministic seeded noise. It is a demonstration label, not a health outcome.",
+      low: "selected low workload generation profile",
+      moderate: "selected moderate workload generation profile",
+      high: "selected high workload generation profile",
+      note: "Labels are assigned before feature generation using class-specific workload profiles. The latent score is auxiliary and does not assign labels. Synthetic labels are not health outcomes.",
     },
     limitation:
       "All training records and labels are synthetic. Metrics demonstrate pipeline behavior and are not evidence of clinical, psychological, or real-world educational validity.",

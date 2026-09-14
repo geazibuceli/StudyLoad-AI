@@ -45,7 +45,7 @@ The versioned model artifact is the authoritative source for feature order, norm
 
 The model is trained only on programmatically generated feature vectors. A deterministic pseudorandom generator initialized with seed `42` varies counts, workload values, deadline summaries, progress, and weekly availability within bounded ranges. It does not generate complete task schedules and pass them through the production extractor.
 
-Synthetic class labels are produced from explicit assumptions about schedule density and urgency. This provides a reproducible target for software development, but it also means that the model primarily approximates those assumptions. It does not discover a ground truth about real students.
+The current generator selects a synthetic class label first and draws features from that class's configured workload profile. Its auxiliary latent score does not assign the label. This provides a reproducible target for software development, but validation primarily measures how well the model distinguishes those constructed profiles. It does not discover a ground truth about real students. Results from different generator revisions must not be presented as a controlled comparison on the same validation benchmark.
 
 The generator is useful for:
 
