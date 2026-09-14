@@ -66,6 +66,7 @@ describe("application server", () => {
     assert.match(body, /id="clear-filters-button"/);
     assert.match(body, /id="clear-data-button"/);
     assert.match(body, /id="empty-clear-button"/);
+    assert.match(body, /planner-privacy-notice/i);
   });
 
   test("analyzes and simulates valid schedules through the API", async () => {

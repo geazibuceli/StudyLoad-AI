@@ -350,8 +350,10 @@ function restoreLocalState() {
       !saved ||
       !Array.isArray(saved.tasks) ||
       saved.tasks.some((task) => !isStoredTaskValid(task))
-    )
+    ) {
+      localStorage.removeItem(STORAGE_KEY);
       return false;
+    }
     const hours = Number(saved.weeklyAvailableHours);
     state.tasks = saved.tasks;
     state.weeklyAvailableHours = Number.isFinite(hours) && hours > 0 ? hours : 18;
@@ -956,7 +958,7 @@ function renderTasks() {
               : "No tasks match this view";
 
     elements.taskEmpty.querySelector("p").textContent = !hasPlannerTasks
-      ? "Add a deadline, exam, or study task to build your first workload forecast."
+      ? "Start by adding your own tasks, or load sample data to explore the forecast flow right away."
       : allTasksCompleted
         ? "Add a new task or reopen one to keep planning the week."
         : query
@@ -1858,8 +1860,24 @@ async function initialize() {
   elements.taskSearch.value = state.search;
   elements.taskSort.value = state.sort;
   updateFilterButtons();
-  if (restored) await analyzeSchedule();
-  else await loadDemo({ announce: false });
+
+  if (restored) {
+    await analyzeSchedule();
+    showToast("Your saved planner was restored from this browser.", "success");
+  } else {
+    state.tasks = [];
+    state.weeklyAvailableHours = 18;
+    state.demoMode = false;
+    state.search = "";
+    state.filter = "open";
+    state.sort = "deadline";
+    renderLocalState();
+    showToast(
+      "No saved planner was found. Start with your own tasks or explore the sample data.",
+      "success",
+    );
+  }
+
   setupRevealAnimations();
 }
 

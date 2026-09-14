@@ -14,7 +14,7 @@ Install Node.js 22 or newer, then run this command from the repository root:
 npm start
 ```
 
-Open `http://localhost:3000`. On a first visit with no saved planner, the application loads its built-in artificial example so you can explore the complete workflow without entering personal information. The **Explore sample data** action restores that example later.
+Open `http://localhost:3000`. If a saved planner already exists in this browser, the application restores it automatically. On a first visit with no saved planner, the interface starts with an empty planner and invites you to add your own tasks or load the built-in artificial example from **Explore sample data**.
 
 ## 3. Set weekly availability
 

@@ -50,7 +50,9 @@ No runtime packages need to be installed. From the repository root, start the ap
 npm start
 ```
 
-Open `http://localhost:3000` in a browser. Stop the server with `Ctrl+C`.
+Open `http://localhost:3000` in a browser. If you already have a saved planner in this browser, it will be restored automatically. If no saved planner exists, the application opens with an empty planner and invites you to add your own tasks or load the sample data.
+
+Stop the server with `Ctrl+C`.
 
 The server honors the `HOST` and `PORT` environment variables. Its default bind address is `0.0.0.0`, which may make it reachable from other devices allowed by your firewall. For a strictly loopback-only session, set `HOST` to `127.0.0.1` before starting it.
 
