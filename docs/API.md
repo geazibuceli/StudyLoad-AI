@@ -36,14 +36,16 @@ The API interprets `progress: 100` as completed. It never infers task importance
 
 ### `GET /api/health`
 
-Returns service status and confirms that the API is non-diagnostic.
+Returns service status and exposes lightweight runtime diagnostics for the local service instance.
 
 ```json
 {
   "status": "ok",
   "service": "study-balance-ai",
   "version": "1.0.0",
-  "diagnostic": false
+  "diagnostic": true,
+  "requestCount": 12,
+  "uptimeSeconds": 25.4
 }
 ```
 

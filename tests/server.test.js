@@ -50,6 +50,9 @@ describe("application server", () => {
     assert.equal(response.status, 200);
     assert.match(response.headers.get("content-type") ?? "", /application\/json/i);
     assert.equal(body.status, "ok");
+    assert.equal(body.diagnostic, true);
+    assert.ok(Number.isInteger(body.requestCount));
+    assert.ok(Number.isFinite(body.uptimeSeconds));
     assert.match(response.headers.get("x-request-id") ?? "", /.+/);
   });
 

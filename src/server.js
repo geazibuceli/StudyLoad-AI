@@ -40,6 +40,11 @@ const SECURITY_HEADERS = {
   "X-Frame-Options": "DENY",
 };
 
+const healthState = {
+  requestCount: 0,
+  startedAt: Date.now(),
+};
+
 function writeResponse(response, statusCode, body, headers = {}) {
   response.writeHead(statusCode, { ...SECURITY_HEADERS, ...headers });
   response.end(body);
@@ -147,11 +152,14 @@ async function handleRequest(request, response, options) {
   const method = request.method ?? "GET";
 
   if (method === "GET" && url.pathname === "/api/health") {
+    healthState.requestCount += 1;
     writeJson(response, 200, {
       status: "ok",
       service: "study-balance-ai",
       version: "1.0.0",
-      diagnostic: false,
+      diagnostic: true,
+      requestCount: healthState.requestCount,
+      uptimeSeconds: (Date.now() - healthState.startedAt) / 1000,
     });
     return;
   }
