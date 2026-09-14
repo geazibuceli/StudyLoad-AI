@@ -116,6 +116,7 @@
         </a>
 
         <nav class="desktop-nav" aria-label="Primary navigation">
+          <a class="hidden" id="today-nav-link" href="#today">Today</a>
           <a href="#overview">Overview</a>
           <a href="#week-explorer">Week</a>
           <a href="#planner">Planner</a>
@@ -141,7 +142,8 @@
     </header>
 
     <main id="main-content">
-      <section class="hero" id="top">
+      <span id="top" aria-hidden="true"></span>
+      <section class="hero" id="welcome">
         <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
         <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
         <div class="shell hero-grid">
@@ -215,6 +217,92 @@
               Planning support—not a health or clinical assessment.
             </div>
           </aside>
+        </div>
+      </section>
+
+      <section class="today-section hidden" id="today" aria-labelledby="today-title">
+        <div class="shell">
+          <div class="today-heading">
+            <div>
+              <p class="section-kicker" id="today-date">YOUR DAILY PLAN</p>
+              <div class="title-row">
+                <h1 id="today-title">Today, at a glance.</h1>
+                <span class="data-badge" id="today-data-badge">Your local data</span>
+              </div>
+              <p class="today-summary" id="today-summary" role="status"></p>
+            </div>
+            <div class="today-actions">
+              <button class="button button-ghost-dark" id="today-add-button" type="button">
+                <svg class="icon" aria-hidden="true"><use href="#icon-plus" /></svg>
+                Add task
+              </button>
+              <button class="button button-dark" id="today-focus-button" type="button">
+                <svg class="icon" aria-hidden="true"><use href="#icon-play" /></svg>
+                Start a focus session
+              </button>
+            </div>
+          </div>
+
+          <div class="today-grid">
+            <article class="today-card" aria-labelledby="today-tasks-title">
+              <div class="today-card-heading">
+                <span class="metric-icon orange" aria-hidden="true">
+                  <svg class="icon"><use href="#icon-target" /></svg>
+                </span>
+                <div>
+                  <span class="panel-kicker">FIRST THINGS FIRST</span>
+                  <h2 id="today-tasks-title">Today &amp; overdue</h2>
+                </div>
+              </div>
+              <ul class="today-task-list" id="today-task-list"></ul>
+              <button class="text-button today-card-link" id="today-planner-button" type="button">
+                View open tasks
+                <svg class="icon" aria-hidden="true"><use href="#icon-arrow" /></svg>
+              </button>
+            </article>
+
+            <article class="today-card" aria-labelledby="today-upcoming-title">
+              <div class="today-card-heading">
+                <span class="metric-icon purple" aria-hidden="true">
+                  <svg class="icon"><use href="#icon-calendar" /></svg>
+                </span>
+                <div>
+                  <span class="panel-kicker">LOOKING AHEAD</span>
+                  <h2 id="today-upcoming-title">Next deadlines</h2>
+                </div>
+              </div>
+              <ul class="today-task-list" id="today-upcoming-list"></ul>
+              <p class="today-card-note">Select a task to review or update it.</p>
+            </article>
+
+            <article class="today-card today-workload" aria-labelledby="today-workload-title">
+              <div class="today-card-heading">
+                <span class="metric-icon green" aria-hidden="true">
+                  <svg class="icon"><use href="#icon-trend" /></svg>
+                </span>
+                <div>
+                  <span class="panel-kicker">NEXT SEVEN DAYS</span>
+                  <h2 id="today-workload-title">Weekly workload</h2>
+                </div>
+              </div>
+              <div class="today-workload-value" id="today-workload-value">—</div>
+              <p class="today-workload-caption" id="today-workload-caption" role="status">
+                Preparing your forecast…
+              </p>
+              <progress
+                class="today-capacity hidden"
+                id="today-capacity"
+                max="100"
+                value="0"
+                aria-label="Weekly study capacity used"
+              ></progress>
+              <p class="today-workload-detail" id="today-workload-detail"></p>
+              <a class="text-button today-card-link" href="#overview">
+                View full forecast
+                <svg class="icon" aria-hidden="true"><use href="#icon-arrow" /></svg>
+              </a>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -1075,7 +1163,7 @@
     </dialog>
 
     <nav class="mobile-dock" aria-label="Mobile quick navigation">
-      <a href="#overview"
+      <a href="#overview" id="mobile-home-link"
         ><svg class="icon"><use href="#icon-trend" /></svg><span>Overview</span></a
       >
       <a href="#week-explorer"

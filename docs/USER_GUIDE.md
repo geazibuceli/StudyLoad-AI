@@ -16,6 +16,14 @@ npm start
 
 Open `http://localhost:3000`. If a saved planner already exists in this browser, the application restores it automatically. On a first visit with no saved planner, the interface starts with an empty planner and invites you to add your own tasks or load the built-in artificial example from **Explore sample data**.
 
+### Start with Today
+
+When your planner contains tasks, the **Today** dashboard replaces the introductory banner. It shows counts for unfinished tasks due today and overdue, up to three tasks from those groups, and your next three future deadlines. Completed tasks are excluded from these lists. Select a task to edit its details or progress, use **Add task**, or open **Start a focus session** to choose a task and start the existing timer.
+
+**Weekly workload** shows the modeled work for the next seven days relative to your weekly availability. It updates with the forecast; while the forecast is loading or unavailable, the task lists remain usable and the percentage is hidden. **View full forecast** opens the detailed analysis and availability controls below.
+
+The dashboard ignores planner search and filters. **View all open tasks** clears them and opens the planner. When every task is completed, the dashboard keeps your saved plan accessible and disables the focus shortcut until you add or reopen a task. Removing all tasks brings back the introduction. The date follows your local calendar and refreshes when the day changes, including when you return to the tab.
+
 ## 3. Set weekly availability
 
 Enter the number of hours you realistically intend to make available for academic work during the next seven days. The interface accepts values from `1` through `168`.

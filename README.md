@@ -26,6 +26,7 @@ StudyBalance AI explores that idea through three principles:
 
 ## MVP features
 
+- **Daily dashboard:** planners with saved tasks open directly on Today, with up to three overdue or due-today tasks, the next three deadlines, weekly capacity use, and quick access to task creation and Focus mode. Empty planners keep the introductory view.
 - **Interactive task planner:** create, update, complete, search, sort, filter, and remove academic tasks; inline progress changes save immediately and refresh the forecast. The planner also supports contextual empty-state recovery, clearer reset actions for search and filters, and keyboard shortcuts such as `/` for quick search and `Esc` to reset search state.
 - **Seven-day explorer:** select a day to inspect the tasks contributing modeled effort, or drag a flexible task onto a day to reschedule its deadline with a one-level undo.
 - **Weekly forecast:** estimate `low`, `moderate`, or `high` overload from the next seven days.
@@ -50,7 +51,7 @@ No runtime packages need to be installed. From the repository root, start the ap
 npm start
 ```
 
-Open `http://localhost:3000` in a browser. If you already have a saved planner in this browser, it will be restored automatically. If no saved planner exists, the application opens with an empty planner and invites you to add your own tasks or load the sample data.
+Open `http://localhost:3000` in a browser. If you already have a saved planner in this browser, it will be restored automatically; planners containing tasks open directly on the Today dashboard. If no saved planner exists, the application opens with an empty planner and invites you to add your own tasks or load the sample data.
 
 Stop the server with `Ctrl+C`.
 

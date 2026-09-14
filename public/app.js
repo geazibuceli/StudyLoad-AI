@@ -76,6 +76,7 @@ const elements = {
   metricOpenTasks: document.querySelector("#metric-open-tasks"),
   mobileAddButton: document.querySelector("#mobile-add-button"),
   mobileFocusButton: document.querySelector("#mobile-focus-button"),
+  mobileHomeLink: document.querySelector("#mobile-home-link"),
   privacyButton: document.querySelector("#privacy-button"),
   privacyDialog: document.querySelector("#privacy-dialog"),
   probabilityHigh: document.querySelector("#probability-high"),
@@ -131,8 +132,23 @@ const elements = {
   taskSearchClear: document.querySelector("#task-search-clear"),
   taskSort: document.querySelector("#task-sort"),
   toastRegion: document.querySelector("#toast-region"),
+  todayAddButton: document.querySelector("#today-add-button"),
+  todayCapacity: document.querySelector("#today-capacity"),
+  todayDashboard: document.querySelector("#today"),
+  todayDataBadge: document.querySelector("#today-data-badge"),
+  todayDate: document.querySelector("#today-date"),
+  todayFocusButton: document.querySelector("#today-focus-button"),
+  todayNavLink: document.querySelector("#today-nav-link"),
+  todayPlannerButton: document.querySelector("#today-planner-button"),
+  todaySummary: document.querySelector("#today-summary"),
+  todayTaskList: document.querySelector("#today-task-list"),
+  todayUpcomingList: document.querySelector("#today-upcoming-list"),
+  todayWorkloadCaption: document.querySelector("#today-workload-caption"),
+  todayWorkloadDetail: document.querySelector("#today-workload-detail"),
+  todayWorkloadValue: document.querySelector("#today-workload-value"),
   updateList: document.querySelector("#update-list"),
   weekDayGrid: document.querySelector("#week-day-grid"),
+  welcome: document.querySelector("#welcome"),
 };
 
 const APP_UPDATES = [
@@ -418,6 +434,7 @@ async function analyzeSchedule({ announce = false } = {}) {
     });
   renderDataBadge();
   renderMetrics();
+  renderTodayDashboard();
   setButtonBusy(elements.refreshButton, true, "Analyzing…");
   try {
     const analysis = await fetchJson("/api/analyze", {
@@ -524,12 +541,114 @@ function renderUpdates() {
 
 function renderLocalState() {
   elements.capacityInput.value = state.weeklyAvailableHours;
+  renderTodayDashboard();
   renderPeriod();
   renderDataBadge();
   renderMetrics();
   renderTasks();
   renderScenarioOptions();
   renderFocusPlan();
+}
+
+function renderTodayTaskList(container, tasks, emptyTitle, emptyMessage) {
+  container.replaceChildren();
+  if (tasks.length === 0) {
+    const item = document.createElement("li");
+    item.className = "today-empty";
+    item.innerHTML = `${icon("check")}<strong>${escapeHtml(emptyTitle)}</strong><p>${escapeHtml(emptyMessage)}</p>`;
+    container.append(item);
+    return;
+  }
+
+  for (const task of tasks.slice(0, 3)) {
+    const item = document.createElement("li");
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "today-task";
+    button.dataset.todayTaskId = task.id;
+    button.setAttribute("aria-label", `Edit ${task.title}, ${deadlineDescription(task)}`);
+    const overdue = task.deadline < state.referenceDate;
+    button.innerHTML = `
+      <span class="today-task-copy">
+        <strong>${escapeHtml(task.title)}</strong>
+        <small>${escapeHtml(task.subject)} · ${formatNumber(remainingHours(task))} h left</small>
+        <span class="today-deadline${overdue ? " overdue" : ""}">${escapeHtml(deadlineDescription(task))} · ${escapeHtml(formatDate(task.deadline))}</span>
+      </span>${icon("chevron")}`;
+    item.append(button);
+    container.append(item);
+  }
+}
+
+function renderTodayDashboard() {
+  const hasTasks = state.tasks.length > 0;
+  elements.welcome.classList.toggle("hidden", hasTasks);
+  elements.todayDashboard.classList.toggle("hidden", !hasTasks);
+  elements.todayNavLink.classList.toggle("hidden", !hasTasks);
+  document.body.classList.toggle("dashboard-active", hasTasks);
+  elements.mobileHomeLink.href = hasTasks ? "#today" : "#overview";
+  elements.mobileHomeLink.querySelector("span").textContent = hasTasks ? "Today" : "Overview";
+  if (!hasTasks) return;
+
+  const openTasks = rankedOpenTasks();
+  const dueToday = openTasks.filter((task) => task.deadline === state.referenceDate);
+  const overdue = openTasks.filter((task) => task.deadline < state.referenceDate);
+  const upcoming = openTasks.filter((task) => task.deadline > state.referenceDate);
+  elements.todayDate.textContent = formatDate(state.referenceDate, {
+    weekday: "long",
+    year: "numeric",
+  });
+  elements.todayDataBadge.textContent = state.demoMode ? "Sample data" : "Your local data";
+  elements.todayDataBadge.classList.toggle("personal", !state.demoMode);
+  elements.todaySummary.textContent =
+    openTasks.length === 0
+      ? "All your tasks are complete. Add a task whenever you are ready to plan again."
+      : `${dueToday.length} due today · ${overdue.length} overdue · ${openTasks.length} open ${openTasks.length === 1 ? "task" : "tasks"}`;
+  elements.todayFocusButton.disabled = openTasks.length === 0;
+  elements.todayPlannerButton.textContent =
+    openTasks.length === 0
+      ? "View completed tasks"
+      : `View all ${openTasks.length} open ${openTasks.length === 1 ? "task" : "tasks"}`;
+
+  renderTodayTaskList(
+    elements.todayTaskList,
+    [...overdue, ...dueToday],
+    openTasks.length === 0 ? "Everything is complete" : "No deadlines need attention today",
+    openTasks.length === 0
+      ? "Your completed tasks are still in the planner."
+      : "You can use a focus session to get ahead on upcoming work.",
+  );
+  renderTodayTaskList(
+    elements.todayUpcomingList,
+    upcoming,
+    "No upcoming deadlines",
+    "Add your next assignment, exam, or study task when you are ready.",
+  );
+
+  const forecastReady = Boolean(state.analysis && !state.analysisStale);
+  elements.todayCapacity.classList.toggle("hidden", !forecastReady);
+  elements.todayWorkloadValue.classList.toggle(
+    "over-capacity",
+    forecastReady && state.analysis.features.loadRatio > 1,
+  );
+  if (!forecastReady) {
+    elements.todayWorkloadValue.textContent = "—";
+    elements.todayWorkloadCaption.textContent =
+      state.analysisStatus === "error" ? "Forecast unavailable" : "Updating your forecast…";
+    elements.todayWorkloadDetail.textContent =
+      state.analysisStatus === "error"
+        ? "Your tasks are available. Use Update forecast below to try again."
+        : "Your saved tasks are ready while the weekly estimate loads.";
+    return;
+  }
+
+  const ratio = state.analysis.features.loadRatio;
+  const percentage = Math.round(ratio * 100);
+  elements.todayWorkloadValue.textContent = `${percentage}%`;
+  elements.todayWorkloadCaption.textContent =
+    ratio > 1 ? "of capacity · above your weekly availability" : "of your weekly study capacity";
+  elements.todayCapacity.value = Math.min(100, percentage);
+  elements.todayCapacity.setAttribute("aria-valuetext", `${percentage}% of weekly study capacity`);
+  elements.todayWorkloadDetail.textContent = `${formatNumber(ratio * state.weeklyAvailableHours)} h of modeled work / ${formatNumber(state.weeklyAvailableHours)} h available`;
 }
 
 function renderPeriod() {
@@ -1695,6 +1814,23 @@ function setupRevealAnimations() {
 }
 
 function bindEvents() {
+  elements.todayAddButton.addEventListener("click", () => openTaskDialog());
+  elements.todayFocusButton.addEventListener("click", openFocusMode);
+  elements.todayPlannerButton.addEventListener("click", () => {
+    state.filter = state.tasks.some((task) => task.progress < 100) ? "open" : "all";
+    state.search = "";
+    elements.taskSearch.value = "";
+    saveLocalState();
+    updateFilterButtons();
+    renderTasks();
+    executeCommand("planner");
+  });
+  elements.todayDashboard.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-today-task-id]");
+    if (!button) return;
+    const task = state.tasks.find((candidate) => candidate.id === button.dataset.todayTaskId);
+    if (task) openTaskDialog(task);
+  });
   elements.addTaskButton.addEventListener("click", () => openTaskDialog());
   elements.emptyAddButton.addEventListener("click", () => openTaskDialog());
   elements.emptyClearButton.addEventListener("click", () => {
@@ -1862,6 +1998,7 @@ async function initialize() {
   updateFilterButtons();
 
   if (restored) {
+    renderLocalState();
     await analyzeSchedule();
     showToast("Your saved planner was restored from this browser.", "success");
   } else {
@@ -1879,6 +2016,18 @@ async function initialize() {
   }
 
   setupRevealAnimations();
+  document.addEventListener("visibilitychange", refreshCurrentDay);
+  window.setInterval(refreshCurrentDay, 60_000);
+}
+
+function refreshCurrentDay() {
+  if (document.hidden || state.referenceDate === todayISO()) return;
+  state.referenceDate = todayISO();
+  state.selectedDate = null;
+  state.analysisStale = true;
+  resetScenario();
+  renderLocalState();
+  if (state.tasks.length > 0) analyzeSchedule();
 }
 
 initialize();
